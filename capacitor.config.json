@@ -1,0 +1,33 @@
+{
+  "appId": "com.posco.arg_mob01",
+  "appName": "POAR Inspection",
+  "webDir": "build",
+  "plugins": {
+    "CapacitorSQLite": {
+      "androidIsEncryption": false
+    },
+    "CapacitorHttp": {
+      "enabled": true
+    },
+    "SplashScreen": {
+      "launchShowDuration": 3000,
+      "launchAutoHide": true,
+      "backgroundColor": "#0054a6",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": true,
+      "androidSpinnerStyle": "large",
+      "iosSpinnerStyle": "small",
+      "spinnerColor": "#ffffff",
+      "splashFullScreen": false,
+      "splashImmersive": false
+    },
+    "StatusBar": {
+      "overlaysWebView": false,
+      "style": "DARK"
+    },
+    "Keyboard": {
+      "resize": "body",
+      "resizeOnFullScreen": false
+    }
+  }
+}

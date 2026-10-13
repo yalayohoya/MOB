@@ -1,0 +1,112 @@
+import { createLocaleStore } from './helper';
+import type { Lang } from './helper';
+
+export const dict = {
+  historyTitle: { ko: "점검 이력", es: "Historial" },
+  history: {
+    ko: {
+        "searchPlaceholder": "점검활동번호 검색...",
+        "controlSettings": "관제 설정",
+        "resultCount": "조회 결과 : {count}건",
+        "noDataTitle": "기록된 데이터가 없습니다",
+        "noDataDesc": "공장 설비를 스캔하여 첫 번째 점검 리포트를 작성하고 로컬 DB에 보관하세요.",
+        "startNewInspection": "새 점검 시작하기",
+        "noSearchResultsTitle": "검색 결과 없음",
+        "noSearchResultsDesc": "\"{query}\"에 대한 기록을 찾을 수 없습니다.",
+        "resetSearch": "검색어 초기화",
+        "notRegistered": "서버 미등록",
+        "synced": "보고 완료",
+        "unsynced": "미보고",
+        "detailTitle": "점검 상세 리포트",
+        "serialNo": "일련번호",
+        "equipmentId": "설비ID",
+        "resultLabel": "점검 결과",
+        "dateLabel": "점검일시",
+        "completed": "완료",
+        "incomplete": "미흡",
+        "detailItemsTitle": "세부 체크 항목",
+        "detailOpinion": "상세 의견",
+        "summaryLabel": "종합 특이사항",
+        "sending": "전송중",
+        "send": "전송",
+        "editReport": "리포트 수정",
+        "confirm": "확인",
+        "filterTitle": "상세 필터 설정",
+        "filterStatus": "점검 상태",
+        "filterPeriod": "조회 기간",
+        "filterSync": "보고 여부",
+        "statusAll": "전체",
+        "statusPass": "완료",
+        "statusFail": "미흡",
+        "periodAll": "전체",
+        "periodToday": "오늘",
+        "periodWeek": "일주일",
+        "periodMonth": "한달",
+        "startDate": "시작일",
+        "endDate": "종결일",
+        "syncAll": "전체",
+        "syncLocal": "미보고",
+        "syncCloud": "보고 완료",
+        "resetBtn": "초기화",
+        "applyBtn": "필터 적용",
+        "actionNoLabel": "점검활동번호:"
+    },
+    es: {
+        "searchPlaceholder": "Buscar por Nº Actividad...",
+        "controlSettings": "Filtros",
+        "resultCount": "Resultados: {count}",
+        "noDataTitle": "No hay datos registrados",
+        "noDataDesc": "Escanee el equipo de la planta para crear su primer informe de inspección y guárdelo en la base de datos local.",
+        "startNewInspection": "Iniciar nueva inspección",
+        "noSearchResultsTitle": "Sin resultados",
+        "noSearchResultsDesc": "No se encontraron registros para \"{query}\".",
+        "resetSearch": "Restablecer búsqueda",
+        "notRegistered": "No registrado en servidor",
+        "synced": "Reportado",
+        "unsynced": "No reportado",
+        "detailTitle": "Informe Detallado de Inspección",
+        "serialNo": "Nº Serie",
+        "equipmentId": "ID Equipo",
+        "resultLabel": "Resultado",
+        "dateLabel": "Fecha y hora",
+        "completed": "Completado",
+        "incomplete": "Incompleto",
+        "detailItemsTitle": "Detalles de inspección",
+        "detailOpinion": "Comentarios detallados",
+        "summaryLabel": "Observaciones generales",
+        "sending": "Enviando...",
+        "send": "Enviar",
+        "editReport": "Editar informe",
+        "confirm": "Aceptar",
+        "filterTitle": "Configuración de filtros",
+        "filterStatus": "Estado de inspección",
+        "filterPeriod": "Periodo de consulta",
+        "filterSync": "Estado de reporte",
+        "statusAll": "Todos",
+        "statusPass": "Completado",
+        "statusFail": "Incompleto",
+        "periodAll": "Todo",
+        "periodToday": "Hoy",
+        "periodWeek": "Una semana",
+        "periodMonth": "Un mes",
+        "startDate": "Fecha inicio",
+        "endDate": "Fecha fin",
+        "syncAll": "Todos",
+        "syncLocal": "No reportado",
+        "syncCloud": "Reportado",
+        "resetBtn": "Restablecer",
+        "applyBtn": "Aplicar filtros",
+        "actionNoLabel": "Nº Actividad:"
+    }
+  },
+} satisfies Record<string, Record<Lang, any>>;
+
+export type HistoryKey = keyof typeof dict;
+
+/**
+ * [HISTORY 전용 반응형 언어 스토어]
+ * 사용법:
+ *   import { t } from '$lib/locales/history';
+ *   {$t.someKey}
+ */
+export const t = createLocaleStore(dict);

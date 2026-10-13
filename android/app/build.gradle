@@ -1,0 +1,168 @@
+import groovy.json.JsonSlurper
+
+apply plugin: 'com.android.application'
+
+// 루트 경로의 package.json 파일에서 version 값을 추출하는 헬퍼 함수
+def getAppVersionFromPackageJson() {
+    def pkgFile = rootProject.file("../package.json")
+    def version = "1.0.0"
+    if (pkgFile.exists()) {
+        try {
+            def parsedJson = new JsonSlurper().parseText(pkgFile.text)
+            if (parsedJson && parsedJson.version) {
+                version = parsedJson.version
+            }
+        } catch (Exception e) {
+            logger.warn("Failed to parse package.json for version: " + e.message)
+        }
+    }
+    return version
+}
+
+def appVersionName = getAppVersionFromPackageJson()
+
+android {
+    namespace = "com.posco.arg_mob01"
+    compileSdk = rootProject.ext.compileSdkVersion
+
+    // local.properties에서 릴리스 키스토어 서명 정보 로드
+    def localProps = new Properties()
+    def localPropsFile = rootProject.file('local.properties')
+    if (localPropsFile.exists()) {
+        localProps.load(new FileInputStream(localPropsFile))
+    }
+
+    // 릴리스 서명 설정 (모든 컴퓨터에서 동일한 서명 보장)
+    signingConfigs {
+        release {
+            storeFile file('release.keystore')
+            storePassword localProps['RELEASE_STORE_PASSWORD'] ?: ''
+            keyAlias localProps['RELEASE_KEY_ALIAS'] ?: 'posco_arg_mob01'
+            keyPassword localProps['RELEASE_KEY_PASSWORD'] ?: ''
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.posco.arg_mob01"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName appVersionName
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+    buildFeatures {
+        buildConfig true
+    }
+    buildTypes {
+        debug {
+            // 디버그 빌드도 릴리스 키로 서명 (컴퓨터 간 APK 교체 호환성 보장)
+            signingConfig signingConfigs.release
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+    // 빌드 시작 전 android/apks 통합 수집 폴더 초기화 (이전 빌드 잔여 파일 삭제)
+    def targetApksDir = rootProject.file("apks")
+    clean.doFirst {
+        if (targetApksDir.exists()) {
+            targetApksDir.deleteDir()
+        }
+    }
+
+    // 빌드 완료 후 지정 규칙에 맞춘 복사
+    // - Debug: 버전 미포함(app-debug.apk) + 버전 포함(app-debug_v1.0.0.apk) 둘 다 복사
+    // - Release: 버전 포함(app-release_v1.0.0.apk)만 복사
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def verName = variant.versionName
+            def isDebug = variant.buildType.name == 'debug'
+            variant.assembleProvider.configure {
+                doFirst {
+                    // 최초 빌드 시작 시 apks 폴더 자동 비우기
+                    if (!targetApksDir.exists()) {
+                        targetApksDir.mkdirs()
+                    }
+                }
+                doLast {
+                    def apkDir = output.outputFile.parentFile
+                    def originalApk = output.outputFile
+                    if (originalApk.exists()) {
+                        def baseName = originalApk.name.substring(0, originalApk.name.length() - 4)
+                        def versionedApkName = "${baseName}_v${verName}.apk"
+                        
+                        if (isDebug) {
+                            // Debug 빌드: 버전 포함 복사본 생성
+                            project.copy {
+                                from originalApk
+                                into apkDir
+                                rename { versionedApkName }
+                            }
+                            // apks 폴더로 버전 포함 + 버전 미포함 둘 다 복사
+                            project.copy {
+                                from originalApk
+                                into targetApksDir
+                            }
+                            project.copy {
+                                from originalApk
+                                into targetApksDir
+                                rename { versionedApkName }
+                            }
+                        } else {
+                            // Release 빌드: 버전 포함 파일만 복사 (버전 없는 원래 app-release.apk는 지움)
+                            project.copy {
+                                from originalApk
+                                into apkDir
+                                rename { versionedApkName }
+                            }
+                            project.copy {
+                                from originalApk
+                                into targetApksDir
+                                rename { versionedApkName }
+                            }
+                            // 원본 app-release.apk 삭제
+                            originalApk.delete()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}

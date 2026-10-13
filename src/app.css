@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-app-bg: var(--app-bg);
+  --color-app-text: var(--app-text);
+  --color-app-header-bg: var(--app-header-bg);
+  --color-app-card-bg: var(--app-card-bg);
+}
+
+:root {
+  --app-bg: #f1f5f9; /* slate-100: 배경을 조금 더 차분하게 */
+  --app-text: #0f172a; /* slate-900 */
+  --app-header-bg: #ffffff;
+  --app-card-bg: #ffffff;
+
+  --app-header-h: 40px;
+  --app-body-h: calc(100vh - var(--app-header-h) - 1px);
+}
+
+.dark {
+  --app-bg: #09090b; /* zinc-950: 버튼(zinc-900)보다 어두운 그레이톤 */
+  --app-text: #f8fafc; /* slate-50 */
+  --app-header-bg: #141414; /* 다크모드 헤더: 순수 블랙으로 변경 */
+  --app-card-bg: #1e293b;
+}
+
+/* 프리미엄 디자인을 위한 전역 스타일 */C
+:root {
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--app-bg);
+  color: var(--app-text);
+  @apply transition-colors duration-300;
+}
+
+/* Glassmorphism 효과 고도화 */
+.glass {
+  @apply backdrop-blur-xl border-b border-white/20 dark:border-white/5;
+  background-color: var(--app-header-bg);
+}
+
+/* 점검 상태 공통 스타일 유틸리티 */
+.state-pass {
+  @apply bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/50 transition-colors;
+}
+
+.state-warn {
+  @apply bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800/50 transition-colors;
+}
+
+.state-fail {
+  @apply bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-900/20 dark:text-rose-400 dark:border-rose-800/50 transition-colors;
+}
+
+.state-empty {
+  @apply bg-slate-100 text-slate-600 dark:bg-zinc-800 dark:text-zinc-400 transition-colors;
+}
+
+/* 스캔 모드 시 배경 투명화 (Capacitor Barcode Scanner용) */
+html.scanner-active,
+html.scanner-active body,
+html.scanner-active #app,
+body.scanner-active,
+body.scanner-active .bg-app-bg,
+body.scanner-active main.active-content {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* 스캔 모드 시 스캐너 화면을 제외한 나머지 UI 요소들을 완전히 숨겨서 카메라를 가리지 않게 함 */
+html.scanner-active header,
+html.scanner-active .fixed:not(.qr-scanner-overlay-container):not(.modal-slide-up-container),
+html.scanner-active main.active-content > *:not(.qr-scanner-overlay-container):not(.modal-slide-up-container) {
+  display: none !important;
+}
+
+@keyframes scan {
+  0% { top: 0%; opacity: 0; }
+  20% { opacity: 1; }
+  40% { opacity: 1; }
+  50% { top: 100%; opacity: 0; }
+  70% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 0%; opacity: 0; }
+}
+
+@keyframes dots {
+  0%, 20% { content: ''; }
+  40% { content: '.'; }
+  60% { content: '..'; }
+  80%, 100% { content: '...'; }
+}
+
+.animate-dots::after {
+  content: '';
+  animation: dots 2s steps(1) infinite;
+}
+
+/* 모든 input 요소 포커스 시 테두리(border) 및 링(ring) 아웃라인 강조 효과 전면 제거 */
+input:focus, textarea:focus, select:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: rgba(226, 232, 240, 0.8) !important; /* light mode border-slate-200 */
+  --tw-ring-width: 0px !important;
+  --tw-ring-color: transparent !important;
+}
+
+.dark input:focus, .dark textarea:focus, .dark select:focus {
+  border-color: rgba(63, 63, 70, 0.8) !important; /* dark mode border-zinc-700 */
+}
+
+/* 측정값 입력 인풋 포커스 강조 개별 오버라이드 */
+input.highlighted-input:focus {
+  border-color: #0f172a !important; /* slate-900 */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4) !important; /* ring-3 ring-blue-500/40 */
+}
+.dark input.highlighted-input:focus {
+  border-color: #f4f4f5 !important; /* zinc-100 */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4) !important;
+}
+

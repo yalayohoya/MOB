@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>화면 개발 및 유지보수 가이드 | P-ARG MOB (POAR Inspection)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-code: #0f172a;
+
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      --primary-subtle: #f0f9ff;
+
+      --accent: #2563eb;
+      --accent-light: #dbeafe;
+
+      --emerald: #059669;
+      --emerald-light: #d1fae5;
+      --amber: #d97706;
+      --amber-light: #fef3c7;
+      --rose: #e11d48;
+      --rose-light: #ffe4e6;
+      --purple: #7c3aed;
+      --purple-light: #ede9fe;
+
+      --border: #e2e8f0;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 80px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 24px 80px 24px;
+    }
+
+    /* Global Header Nav */
+    .top-portal-nav {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .top-portal-nav-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .portal-logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.12rem;
+      color: var(--primary-dark);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .portal-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .portal-link {
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      text-decoration: none;
+      padding: 5px 11px;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .portal-link:hover,
+    .portal-link.active {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+    }
+
+    /* Hero Banner */
+    .doc-hero {
+      background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      margin: 28px 0 32px 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .doc-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .badge-blue {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border: 1px solid rgba(2, 132, 199, 0.2);
+    }
+
+    .badge-green {
+      background: var(--emerald-light);
+      color: var(--emerald);
+      border: 1px solid rgba(5, 150, 105, 0.2);
+    }
+
+    .badge-purple {
+      background: var(--purple-light);
+      color: var(--purple);
+      border: 1px solid rgba(124, 58, 237, 0.2);
+    }
+
+    .doc-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    .doc-desc {
+      color: var(--text-sub);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* Quick TOC Bar */
+    .toc-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .toc-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+
+    .toc-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .toc-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .toc-chip:hover {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border-color: var(--primary);
+    }
+
+    /* Content Cards & Sections */
+    .content-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    h2.section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--text-main);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--bg-subtle);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h3.sub-title {
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 24px 0 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Code Blocks */
+    .code-container {
+      position: relative;
+      background: var(--bg-code);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin: 14px 0 20px 0;
+      overflow-x: auto;
+    }
+
+    .code-container pre {
+      margin: 0;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: #f8fafc;
+      line-height: 1.55;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Alerts */
+    .alert-box {
+      padding: 16px 18px;
+      border-radius: var(--radius-md);
+      margin: 16px 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .alert-info {
+      background: #f0f9ff;
+      border-left: 4px solid var(--primary);
+      color: #0369a1;
+    }
+
+    .alert-warning {
+      background: #fffbeb;
+      border-left: 4px solid var(--amber);
+      color: #92400e;
+    }
+
+    .alert-success {
+      background: #ecfdf5;
+      border-left: 4px solid var(--emerald);
+      color: #065f46;
+    }
+
+    .alert-danger {
+      background: #fff1f2;
+      border-left: 4px solid var(--rose);
+      color: #9f1239;
+    }
+
+    /* Tables */
+    .doc-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 16px 0;
+    }
+
+    .doc-table th {
+      background: #f8fafc;
+      padding: 11px 14px;
+      border-bottom: 2px solid var(--border);
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: left;
+    }
+
+    .doc-table td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-main);
+    }
+
+    /* Lists */
+    ul.styled-list,
+    ol.styled-list {
+      padding-left: 22px;
+      margin: 12px 0 16px 0;
+    }
+
+    ul.styled-list li,
+    ol.styled-list li {
+      margin-bottom: 8px;
+      color: var(--text-sub);
+    }
+
+    ul.styled-list li strong,
+    ol.styled-list li strong {
+      color: var(--text-main);
+    }
+
+    code.inline-code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.83rem;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      font-size: 0.85rem;
+      font-weight: 800;
+      margin-right: 8px;
+    }
+
+    footer {
+      text-align: center;
+      padding-top: 36px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 60px;
+    }
+  </style>
+  <script>
+    function copyCode(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('코드가 클립보드에 복사되었습니다.');
+      }).catch(err => {
+        console.error('복사 실패:', err);
+      });
+    }
+  </script>
+</head>
+
+<body>
+  <nav class="top-portal-nav">
+    <div class="top-portal-nav-inner">
+      <a href="../문서_허브.html" class="portal-logo">
+        <span>📑</span> Guide Docs
+      </a>
+      <div class="portal-links">
+        <a href="../문서_허브.html" class="portal-link">통합 허브</a>
+        <a href="DB명세서.html" class="portal-link">DB명세서</a>
+        <a href="SQL_정의서.html" class="portal-link">SQL정의서</a>
+        <a href="앱_배포_가이드.html" class="portal-link">앱 배포 가이드</a>
+        <a href="프로젝트_규칙.html" class="portal-link">프로젝트 규칙</a>
+        <a href="기술_가이드.html" class="portal-link">기술 가이드</a>
+        <a href="화면_개발_가이드.html" class="portal-link active">화면 개발 가이드</a>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+
+    <header class="doc-hero">
+      <span class="doc-badge badge-green">초급 개발자 친화형 실무 매뉴얼</span>
+      <h1 class="doc-title">🖥️ 화면 개발 및 유지보수 가이드</h1>
+      <p class="doc-desc">
+        스벨트킷(SvelteKit 2)을 처음 접하는 개발자도 실수 없이 기존 화면을 수정하거나 신규 화면을 추가할 수 있도록 정리한 <strong>실전 4단계 표준 가이드</strong>입니다.
+      </p>
+    </header>
+
+    <div class="toc-bar">
+      <div class="toc-title">목차 바로가기</div>
+      <div class="toc-chips">
+        <a href="#sec-checklist" class="toc-chip">0. 개발 전 3대 필수 체크리스트</a>
+        <a href="#sec-sveltekit-concept" class="toc-chip">1. 스벨트킷 라우팅 1분 핵심</a>
+        <a href="#sec-step-by-step" class="toc-chip">2. 신규 화면 생성 실전 4단계</a>
+        <a href="#sec-template" class="toc-chip">3. 복사해 쓰는 표준 화면 템플릿</a>
+        <a href="#sec-ui-components" class="toc-chip">4. 공통 UI 조작법 (알림/버튼/이동)</a>
+        <a href="#sec-verify" class="toc-chip">5. 작업 완료 후 최종 검증</a>
+      </div>
+    </div>
+
+    <!-- Section 0 -->
+    <section id="sec-checklist" class="content-card">
+      <h2 class="section-title">0. 화면 개발 시 절대 어기면 안 되는 3대 필수 원칙</h2>
+      <div class="alert-box alert-danger">
+        🚨 <strong>필독:</strong> 우리 앱은 <strong>포스코 아르헨티나 현장 전용 시스템</strong>입니다. 아래 3가지를 지키지 않으면 빌드 에러가 나거나 현장 작업자가 화면을
+        사용할 수 없게 됩니다.
+      </div>
+
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th>규칙</th>
+            <th>지켜야 할 행동</th>
+            <th>참조 소스 파일</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. 다국어(i18n) 필수</strong></td>
+            <td>화면에 텍스트("점검 시작", "확인" 등)를 직접 하드코딩 금지 ➔ 반드시 언어 사전에 한국어/스페인어를 동시 등록하고 <code
+                class="inline-code">{$t.yourKey}</code>로 출력</td>
+            <td><code>src/lib/stores/lang.ts</code></td>
+          </tr>
+          <tr>
+            <td><strong>2. 라우트 세션 가드</strong></td>
+            <td>로그인한 점검자만 보는 화면이면 건드릴 필요 없음. 만약 <strong>로그인 없이 누구나 열어봐야 하는 화면</strong>이면 반드시 화이트리스트에 경로 등록</td>
+            <td><code>src/routes/+layout.ts</code> (WHITELIST)</td>
+          </tr>
+          <tr>
+            <td><strong>3. 상단 헤더 타이틀</strong></td>
+            <td>새 화면 진입 시 상단 네비게이션 헤더에 현재 화면명이 올바르게 뜨도록 페이지 진입 시 <code class="inline-code">pageTitle.set(...)</code> 호출
+            </td>
+            <td><code>src/lib/stores/ui.ts</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 1 -->
+    <section id="sec-sveltekit-concept" class="content-card">
+      <h2 class="section-title">1. 스벨트킷(SvelteKit) 라우팅 원리 (초보자 요약)</h2>
+      <p>스벨트킷은 별도의 복잡한 라우터 설정 파일이 없습니다. <code class="inline-code">src/routes/</code> 아래에 <strong>폴더를 만들면 그 폴더 이름이 곧 브라우저
+          URL 주소</strong>가 됩니다.</p>
+
+      <ul class="styled-list">
+        <li><code>src/routes/notice/+page.svelte</code> ➔ <strong>/notice</strong> 주소로 열림</li>
+        <li><code>src/routes/maintenance/+page.svelte</code> ➔ <strong>/maintenance</strong> 주소로 열림</li>
+        <li><code>src/routes/maintenance/[id]/+page.svelte</code> ➔ <strong>/maintenance/101</strong> (대괄호는 동적 파라미터 ID를
+          의미)</li>
+      </ul>
+
+      <div class="alert-box alert-info">
+        💡 <strong>파일명 규칙:</strong> 화면 역할을 하는 파일 이름은 무조건 <strong>+page.svelte</strong>여야 합니다. (+ 기호 필수)
+      </div>
+    </section>
+
+    <!-- Section 2 -->
+    <section id="sec-step-by-step" class="content-card">
+      <h2 class="section-title">2. 실전 예제로 따라하는 신규 화면 생성 4단계</h2>
+      <p>예시: <strong>"현장 공지사항(/notice)"</strong>이라는 새 화면을 추가하는 실전 시나리오입니다.</p>
+
+      <h3 class="sub-title"><span class="step-badge">1</span> Step 1: 화면 전용 언어팩 생성 (src/lib/locales/notice.ts)</h3>
+      <p>단일 파일에 수백 개 키를 섞지 않고, <strong>화면 전용 사전 파일</strong>을 생성하여 한국어와 스페인어를 키 단위로 나란히 등록합니다. (스페인어 누락 시 컴파일 에러 발생)</p>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode('code-step1')">복사</button>
+        <pre><code id="code-step1">// src/lib/locales/notice.ts
+import { createLocaleStore } from './helper';
+import type { Lang } from '$lib/stores/lang';
+
+export const dict = {
+  noticeTitle: { ko: '현장 공지사항', es: 'Avisos del Sitio' },
+  noticeEmpty: { ko: '등록된 공지사항이 없습니다.', es: 'No hay avisos registrados.' },
+  noticeRefresh: { ko: '새로고침', es: 'Actualizar' }
+} satisfies Record<string, Record<Lang, string>>;
+
+export const t = createLocaleStore(dict);</code></pre>
+      </div>
+
+      <h3 class="sub-title"><span class="step-badge">2</span> Step 2: 라우트 폴더 및 +page.svelte 생성</h3>
+      <p><code class="inline-code">src/routes/notice/</code> 폴더를 생성하고 내부에 <code class="inline-code">+page.svelte</code>
+        파일을 만듭니다. (Ctrl+클릭으로 언어팩 즉시 이동 가능)</p>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode('code-step2')">복사</button>
+        <pre><code id="code-step2">&lt;script lang="ts"&gt;
+  import { onMount } from 'svelte';
+  import { pageTitle } from '$lib/stores/ui';
+  import { t } from '$lib/locales/notice'; // 👈 t 스토어 하나만 깔끔하게 임포트!
+
+  // 화면 진입 시 상단 헤더 타이틀 바인딩
+  onMount(() => {
+    pageTitle.set($t.noticeTitle);
+  });
+&lt;/script&gt;
+
+&lt;div class="max-w-7xl mx-auto p-4 space-y-4 w-full font-sans"&gt;
+  &lt;div class="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm"&gt;
+    &lt;h2 class="text-lg font-black text-slate-800 dark:text-zinc-100 mb-2"&gt;
+      {$t.noticeTitle}
+    &lt;/h2&gt;
+    &lt;p class="text-sm text-slate-500 dark:text-zinc-400"&gt;
+      {$t.noticeEmpty}
+    &lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+      </div>
+
+      <h3 class="sub-title"><span class="step-badge">3</span> Step 3: 비로그인 허용 여부 체크 (src/routes/+layout.ts)</h3>
+      <p>로그인한 사용자만 이용하는 일반 업무 화면이라면 <strong>아무것도 수정할 필요가 없습니다.</strong> (기본 보안 차단 적용됨)</p>
+      <div class="alert-box alert-warning">
+        ⚠️ <strong>주의 (로그인 전 공개 화면일 때만):</strong><br>
+        만약 로그인 전에도 접속할 수 있어야 하는 공개 화면이라면, <code class="inline-code">src/routes/+layout.ts</code>의 <code
+          class="inline-code">WHITELIST</code> 배열에 해당 경로를 추가해야 세션 리다이렉트 인터셉트에 걸리지 않습니다.
+      </div>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode('code-step3')">복사</button>
+        <pre><code id="code-step3">// src/routes/+layout.ts (공개 화면일 때만 추가)
+const WHITELIST = ['/', '/notice']; // '/notice' 추가</code></pre>
+      </div>
+
+      <h3 class="sub-title"><span class="step-badge">4</span> Step 4: 다른 화면에서 이동 링크(버튼) 연결</h3>
+      <p>대시보드나 헤더 등에서 해당 화면으로 이동하는 버튼을 만듭니다.</p>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode('code-step4')">복사</button>
+        <pre><code id="code-step4">&lt;script lang="ts"&gt;
+  import { goto } from '$app/navigation';
+&lt;/script&gt;
+
+&lt;!-- 방법 1: HTML 링크 태그 --&gt;
+&lt;a href="/notice" class="text-blue-600 font-bold"&gt;공지사항 보기&lt;/a&gt;
+
+&lt;!-- 방법 2: SvelteKit JS 함수 이동 (버튼 클릭 이벤트) --&gt;
+&lt;button on:click={() => goto('/notice')} class="px-4 py-2 bg-blue-600 text-white rounded-xl"&gt;
+  공지사항 이동
+&lt;/button&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- Section 3 -->
+    <section id="sec-template" class="content-card">
+      <h2 class="section-title">3. 복사해서 바로 쓰는 표준 화면 보일러플레이트</h2>
+      <p>새 화면을 만들 때 아래 템플릿 코드를 복사해서 시작하면 헤더 연동, 다크모드, 스크롤 컨테이너 구조가 자동으로 완성됩니다.</p>
+
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode('code-full-template')">복사</button>
+        <pre><code id="code-full-template">&lt;script lang="ts"&gt;
+  import { onMount } from "svelte";
+  import { pageTitle } from "$lib/stores/ui";
+  import { lang, t } from "$lib/stores/lang";
+  import { dbService } from "$lib/services/database";
+  import { showToast } from "$lib/services/toast";
+
+  // 화면 제목 설정
+  onMount(() => {
+    pageTitle.set(t[$lang].myScreenTitle || "화면 제목");
+  });
+  $: pageTitle.set(t[$lang].myScreenTitle || "화면 제목");
+
+  let isLoading = false;
+
+  async function handleAction() {
+    isLoading = true;
+    try {
+      // 로직 실행 (예: SQLite 조회나 데이터 처리)
+      await showToast("작업이 성공적으로 처리되었습니다.");
+    } catch (err: any) {
+      alert("오류: " + err.message);
+    } finally {
+      isLoading = false;
+    }
+  }
+&lt;/script&gt;
+
+&lt;!-- 본문 메인 컨테이너 (스크롤 가능 및 모바일 반응형 여백) --&gt;
+&lt;div class="max-w-7xl mx-auto p-4 md:p-6 space-y-6 w-full font-sans text-slate-800 dark:text-zinc-100"&gt;
+  
+  &lt;!-- 흰색/다크모드 카드 박스 --&gt;
+  &lt;div class="bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800/80 rounded-2xl p-6 shadow-sm space-y-4"&gt;
+    &lt;h3 class="text-base font-black text-slate-800 dark:text-zinc-100 tracking-tight"&gt;
+      카드 제목 영역
+    &lt;/h3&gt;
+    &lt;p class="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed"&gt;
+      설명 문구나 내용이 들어가는 자리입니다.
+    &lt;/p&gt;
+
+    &lt;!-- 모바일 최적화 터치 버튼 (최소 높이 44px 이상 확보) --&gt;
+    &lt;button
+      type="button"
+      on:click={handleAction}
+      disabled={isLoading}
+      class="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-md transition-all active:scale-[0.98] text-xs cursor-pointer border-none outline-none disabled:opacity-50"
+    &gt;
+      {isLoading ? "처리 중..." : "확인 및 실행"}
+    &lt;/button&gt;
+  &lt;/div&gt;
+
+&lt;/div&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- Section 4 -->
+    <section id="sec-ui-components" class="content-card">
+      <h2 class="section-title">4. 자주 쓰는 공통 UI 패턴 (모달, 토스트, 뒤로가기)</h2>
+
+      <h3 class="sub-title">A. 가벼운 하단 스낵바 알림 (Toast)</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode('code-toast-usage')">복사</button>
+        <pre><code id="code-toast-usage">import { showToast } from "$lib/services/toast";
+
+// 하단에 2초간 안내 메시지 출력
+await showToast("설정이 저장되었습니다.");</code></pre>
+      </div>
+
+      <h3 class="sub-title">B. 전역 확인/취소 모달 띄우기 (ConfirmModal)</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode('code-modal-usage')">복사</button>
+        <pre><code id="code-modal-usage">&lt;script lang="ts"&gt;
+  import ConfirmModal from "$lib/components/ConfirmModal.svelte";
+
+  let isModalOpen = false;
+
+  function onConfirmAction() {
+    isModalOpen = false;
+    console.log("사용자가 '예'를 눌렀습니다.");
+  }
+&lt;/script&gt;
+
+&lt;button on:click={() => (isModalOpen = true)} class="px-4 py-2 bg-rose-600 text-white rounded-xl"&gt;
+  데이터 삭제
+&lt;/button&gt;
+
+&lt;ConfirmModal
+  bind:isOpen={isModalOpen}
+  title="삭제 확인"
+  message="정말로 이 항목을 삭제하시겠습니까?"
+  confirmText="삭제"
+  cancelText="취소"
+  type="confirm"
+  on:confirm={onConfirmAction}
+  on:cancel={() => (isModalOpen = false)}
+/&gt;</code></pre>
+      </div>
+
+      <h3 class="sub-title">C. 이전 페이지로 안전하게 뒤로가기</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode('code-back-usage')">복사</button>
+        <pre><code id="code-back-usage">&lt;!-- 브라우저 / 안드로이드 히스토리 뒤로가기 --&gt;
+&lt;button on:click={() => history.back()} class="text-sm font-bold text-slate-500"&gt;
+  &larr; 이전 화면으로
+&lt;/button&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- Section 5 -->
+    <section id="sec-verify" class="content-card">
+      <h2 class="section-title">5. 작업 완료 후 필수 검증 명령어 (반드시 실행!)</h2>
+      <p>코드 작성이나 수정을 마쳤다면 터미널에서 다음 명령어를 실행하여 에러가 0건인지 반드시 확인해야 합니다.</p>
+
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th>명령어</th>
+            <th>수행 목적</th>
+            <th>통과 기준</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>npm run check</code></td>
+            <td>타입스크립트 타입 불일치 및 Svelte 구문 검사</td>
+            <td><strong>svelte-check found 0 errors and 0 warnings</strong> 출력</td>
+          </tr>
+          <tr>
+            <td><code>npm run dev</code></td>
+            <td>로컬 브라우저 개발 서버 구동</td>
+            <td>에러 없이 화면이 정상 렌더링되고 다크모드/다국어 전환이 작동하는지 확인</td>
+          </tr>
+          <tr>
+            <td><code>/dev-db</code> (가상 DB)</td>
+            <td>로컬 SQLite DB 적재 및 쿼리 결과 검증</td>
+            <td>DEV 계정 로그인 후 우측 하단 플로팅 도구(🛠️) ➔ 실시간 가상 DB 뷰어에서 변경된 테이블 행 데이터 확인</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer>
+      <p>SecureScan Ops Documentation Portal &copy; 2026 Maintenance Engineering Team</p>
+      <a href="#"
+        style="color: var(--primary); text-decoration: none; font-weight: 600; display: inline-block; margin-top: 10px;">⬆️
+        맨 위로 이동</a>
+    </footer>
+  </div>
+</body>
+
+</html>

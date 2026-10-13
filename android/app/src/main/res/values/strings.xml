@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">P-ARG MOB</string>
+    <string name="title_activity_main">P-ARG MOB</string>
+    <string name="package_name">com.posco.arg_mob01</string>
+    <string name="custom_url_scheme">com.posco.arg_mob01</string>
+</resources>

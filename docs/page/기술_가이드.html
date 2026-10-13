@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>기술 스택 및 아키텍처 가이드 | P-ARG MOB (POAR Inspection)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-code: #0f172a;
+
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      --primary-subtle: #f0f9ff;
+
+      --accent: #2563eb;
+      --accent-light: #dbeafe;
+
+      --emerald: #059669;
+      --emerald-light: #d1fae5;
+      --amber: #d97706;
+      --amber-light: #fef3c7;
+      --rose: #e11d48;
+      --rose-light: #ffe4e6;
+      --purple: #7c3aed;
+      --purple-light: #ede9fe;
+
+      --border: #e2e8f0;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 80px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 24px 80px 24px;
+    }
+
+    /* Global Header Nav */
+    .top-portal-nav {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .top-portal-nav-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .portal-logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.12rem;
+      color: var(--primary-dark);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .portal-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .portal-link {
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      text-decoration: none;
+      padding: 5px 11px;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .portal-link:hover,
+    .portal-link.active {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+    }
+
+    /* Hero Banner */
+    .doc-hero {
+      background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      margin: 28px 0 32px 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .doc-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .badge-blue {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border: 1px solid rgba(2, 132, 199, 0.2);
+    }
+
+    .badge-green {
+      background: var(--emerald-light);
+      color: var(--emerald);
+      border: 1px solid rgba(5, 150, 105, 0.2);
+    }
+
+    .badge-amber {
+      background: var(--amber-light);
+      color: var(--amber);
+      border: 1px solid rgba(217, 119, 6, 0.2);
+    }
+
+    .badge-purple {
+      background: var(--purple-light);
+      color: var(--purple);
+      border: 1px solid rgba(124, 58, 237, 0.2);
+    }
+
+    .doc-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    .doc-desc {
+      color: var(--text-sub);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* Quick TOC Bar */
+    .toc-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .toc-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+
+    .toc-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .toc-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .toc-chip:hover {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border-color: var(--primary);
+    }
+
+    /* Content Cards & Sections */
+    .content-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    h2.section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--text-main);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--bg-subtle);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h3.sub-title {
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 24px 0 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Code Blocks */
+    .code-container {
+      position: relative;
+      background: var(--bg-code);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin: 14px 0 20px 0;
+      overflow-x: auto;
+    }
+
+    .code-container pre {
+      margin: 0;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: #f8fafc;
+      line-height: 1.55;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Alerts */
+    .alert-box {
+      padding: 16px 18px;
+      border-radius: var(--radius-md);
+      margin: 16px 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .alert-info {
+      background: #f0f9ff;
+      border-left: 4px solid var(--primary);
+      color: #0369a1;
+    }
+
+    .alert-warning {
+      background: #fffbeb;
+      border-left: 4px solid var(--amber);
+      color: #92400e;
+    }
+
+    .alert-success {
+      background: #ecfdf5;
+      border-left: 4px solid var(--emerald);
+      color: #065f46;
+    }
+
+    .alert-danger {
+      background: #fff1f2;
+      border-left: 4px solid var(--rose);
+      color: #9f1239;
+    }
+
+    /* Tables */
+    .doc-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 16px 0;
+    }
+
+    .doc-table th {
+      background: #f8fafc;
+      padding: 11px 14px;
+      border-bottom: 2px solid var(--border);
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: left;
+    }
+
+    .doc-table td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-main);
+    }
+
+    /* Lists */
+    ul.styled-list,
+    ol.styled-list {
+      padding-left: 22px;
+      margin: 12px 0 16px 0;
+    }
+
+    ul.styled-list li,
+    ol.styled-list li {
+      margin-bottom: 8px;
+      color: var(--text-sub);
+    }
+
+    ul.styled-list li strong,
+    ol.styled-list li strong {
+      color: var(--text-main);
+    }
+
+    code.inline-code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.83rem;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .diff-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+      vertical-align: middle;
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    footer {
+      text-align: center;
+      padding-top: 36px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 60px;
+    }
+  </style>
+  <script>
+    function copyCode(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('코드가 클립보드에 복사되었습니다.');
+      }).catch(err => {
+        console.error('복사 실패:', err);
+      });
+    }
+  </script>
+</head>
+
+<body>
+  <nav class="top-portal-nav">
+    <div class="top-portal-nav-inner">
+      <a href="../문서_허브.html" class="portal-logo">
+        <span>📑</span> Guide Docs
+      </a>
+      <div class="portal-links">
+        <a href="../문서_허브.html" class="portal-link">통합 허브</a>
+        <a href="DB명세서.html" class="portal-link">DB명세서</a>
+        <a href="SQL_정의서.html" class="portal-link">SQL정의서</a>
+        <a href="앱_배포_가이드.html" class="portal-link">앱 배포 가이드</a>
+        <a href="프로젝트_규칙.html" class="portal-link">프로젝트 규칙</a>
+        <a href="기술_가이드.html" class="portal-link active">기술 가이드</a>
+        <a href="화면_개발_가이드.html" class="portal-link">화면 개발 가이드</a>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+
+    <header class="doc-hero">
+      <span class="doc-badge badge-green">100% 소스코드 검증 완료</span>
+      <h1 class="doc-title">⚙️ 기술 스택 및 아키텍처 가이드</h1>
+      <p class="doc-desc">
+        SvelteKit 2 SPA 모드, Capacitor 8 하이브리드 엔진, Wi-Fi 사설망 감지, 오프라인 우선 SQLite 6대 물리 테이블 구조 및 2트랙(API/엑셀) 동기화 파이프라인
+        명세서입니다.
+      </p>
+    </header>
+
+    <div class="toc-bar">
+      <div class="toc-title">목차 바로가기</div>
+      <div class="toc-chips">
+        <a href="#tech-specs" class="toc-chip">0. 실제 기술 스택 및 버전</a>
+        <a href="#tech-1" class="toc-chip">1. SvelteKit 2 SPA & 세션 가드</a>
+        <a href="#tech-2" class="toc-chip">2. Vite 6 빌드 & WASM 자동 복사</a>
+        <a href="#tech-3" class="toc-chip">3. SQLite 6대 물리 테이블 구조</a>
+        <a href="#tech-4" class="toc-chip">4. Wi-Fi 사설망 판정 & 온라인 동기화</a>
+        <a href="#tech-5" class="toc-chip">5. 오프라인 엑셀 동기화 & Scoped Storage</a>
+      </div>
+    </div>
+
+    <!-- Section 0: Tech Stack Specs -->
+    <section id="tech-specs" class="content-card">
+      <h2 class="section-title">0. 실제 기술 스택 및 패키지 버전 (package.json 검증)</h2>
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th>구분</th>
+            <th>기술 / 라이브러리</th>
+            <th>현재 설치 버전</th>
+            <th>실제 역할 및 특징</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>UI Framework</strong></td>
+            <td>Svelte / SvelteKit</td>
+            <td><code>svelte: ^5.19.10</code> / <code>kit: ^2.16.1</code></td>
+            <td>Svelte 5 룬(Runes) 기반 고반응성 클라이언트 SPA UI</td>
+          </tr>
+          <tr>
+            <td><strong>Build Tool</strong></td>
+            <td>Vite</td>
+            <td><code>vite: ^6.0.11</code></td>
+            <td>HMR 초고속 개발 서버 및 버전 자동 주입 빌드</td>
+          </tr>
+          <tr>
+            <td><strong>Styling</strong></td>
+            <td>Tailwind CSS</td>
+            <td><code>tailwindcss: ^4.1.18</code> (@tailwindcss/vite)</td>
+            <td>Tailwind v4 Vite 플러그인 기반 유틸리티 스타일</td>
+          </tr>
+          <tr>
+            <td><strong>Hybrid Native</strong></td>
+            <td>Capacitor</td>
+            <td><code>@capacitor/core: ^8.0.2</code>, <code>android: ^8.0.2</code></td>
+            <td>안드로이드 네이티브 브리지 및 APK 패키징</td>
+          </tr>
+          <tr>
+            <td><strong>Local DB</strong></td>
+            <td>Capacitor SQLite & jeep-sqlite</td>
+            <td><code>sqlite: ^8.0.0</code> / <code>jeep-sqlite: 2.8.0</code></td>
+            <td>모바일 네이티브 / 웹 개발서버 공용 오프라인 SQLite</td>
+          </tr>
+          <tr>
+            <td><strong>SQLite WASM</strong></td>
+            <td>sql.js</td>
+            <td><code>sql.js: 1.11.0</code> (버전 고정 엄수)</td>
+            <td>jeep-sqlite 2.8.0과 호환되는 순정 WASM 바이너리</td>
+          </tr>
+          <tr>
+            <td><strong>QR / 바코드</strong></td>
+            <td>ML Kit Barcode Scanning</td>
+            <td><code>@capacitor-mlkit/barcode-scanning: ^8.0.0</code></td>
+            <td>안드로이드 하드웨어 가속 기반 1D/2D 바코드 초고속 인식</td>
+          </tr>
+          <tr>
+            <td><strong>보안 / 화면</strong></td>
+            <td>PrivacyScreen & KeepAwake</td>
+            <td><code>privacy-screen: ^8.0.0</code> / <code>keep-awake: ^8.0.1</code></td>
+            <td>화면 캡처 방지(일반 계정) 및 점검 중 화면 꺼짐 방지</td>
+          </tr>
+          <tr>
+            <td><strong>엑셀 처리</strong></td>
+            <td>SheetJS (xlsx)</td>
+            <td><code>xlsx: ^0.18.5</code></td>
+            <td>오프라인 환경 엑셀 마스터 파싱 및 점검 실적 엑셀 생성</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 1 -->
+    <section id="tech-1" class="content-card">
+      <h2 class="section-title">1. SvelteKit 2 SPA 모드 및 세션 가드 (+layout.ts)</h2>
+      <p>모바일 APK 패키징을 위해 Node.js 서버 사이드 렌더링(SSR)을 완전히 끄고 순수 클라이언트 정적 파일로 생성합니다.</p>
+
+      <h3 class="sub-title">1-1. adapter-static 설정 (svelte.config.js)</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode('code-tech1')">복사</button>
+        <pre><code id="code-tech1">import adapter from '@sveltejs/adapter-static';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
+  preprocess: vitePreprocess(),
+  kit: {
+    adapter: adapter({
+      pages: 'build',
+      assets: 'build',
+      fallback: 'index.html', // SPA 진입점
+      precompress: false,
+      strict: true
+    })
+  }
+};
+
+export default config;</code></pre>
+      </div>
+
+      <h3 class="sub-title">1-2. 전역 SSR 비활성화 및 미인증 라우트 인터셉트 (src/routes/+layout.ts)</h3>
+      <p>SSR을 비활성화하고, 세션 쿠키가 없는 사용자가 화이트리스트 외 경로에 진입 시 즉각 로그인 화면으로 리다이렉트합니다.</p>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode('code-tech1-ts')">복사</button>
+        <pre><code id="code-tech1-ts">import { redirect } from '@sveltejs/kit';
+import type { LayoutLoad } from './$types';
+
+export const ssr = false;
+export const prerender = false;
+export const trailingSlash = 'always';
+
+const WHITELIST = ['/'];
+
+export const load: LayoutLoad = async ({ url }) => {
+  if (typeof window !== 'undefined') {
+    const cleanPath = url.pathname === '/' ? '/' : url.pathname.replace(/\/$/, "");
+    const isLoggedIn = document.cookie.includes('currentUser=') || document.cookie.includes('securescan_user=');
+
+    // 미인증 상태에서 보호된 경로 진입 차단
+    if (!isLoggedIn && !WHITELIST.includes(cleanPath)) {
+      throw redirect(307, '/');
+    }
+  }
+};</code></pre>
+      </div>
+
+      <h3 class="sub-title">1-3. 시스템 비상 및 로컬 개발용 슈퍼계정 (src/lib/stores/auth.ts)</h3>
+      <p>단말기 초기 오프라인 세팅, 현장 네트워크 장애 시 긴급 환경설정 수정 및 디버깅을 위해 로컬 인증 예외 슈퍼계정이 내장되어 있습니다.</p>
+
+      <div class="alert-box alert-danger">
+        <strong>⚠️ 보안 및 운영 주의사항:</strong><br>
+        1. 본 계정은 <strong>시스템 관리자 및 유지보수 개발자 전용</strong> 비상 계정이며, 일반 현장 점검자에게 공유되어서는 안 됩니다.<br>
+        2. <strong>온라인 동기화 제한:</strong> 해당 계정은 로컬 전용으로 온라인 MES 세션 토큰(<code>accToken</code>, <code>rfToken</code>)이 발급되지
+        않으므로, 데이터 송수신(Sync) 시도가 시스템적으로 안전하게 차단됩니다.<br>
+        3. <strong>비밀번호 변경 불가:</strong> 하드코딩된 시스템 보존 계정이므로 비밀번호 변경 기능이 제한됩니다.
+      </div>
+
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th>계정 ID (대소문자 무관)</th>
+            <th>비밀번호</th>
+            <th>보유 권한</th>
+            <th>주요 용도 및 시스템 제약사항</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color: var(--rose);">ADMIN</strong></td>
+            <td><code>admin1!</code></td>
+            <td>
+              <span class="doc-badge badge-blue">COM_ADM_MOB (관리자)</span><br>
+              <span class="doc-badge badge-green" style="margin-top: 4px;">COM_EAM_MOB (점검자)</span>
+            </td>
+            <td>
+              • 오프라인 기기 초기 세팅 및 시스템 설정 관리<br>
+              • 온라인 MES 토큰 미보유 (<strong>동기화 시도 시 차단 알림</strong>)<br>
+              • 비밀번호 변경 불가, <strong><code>dev-db</code> 접근 불가</strong>
+            </td>
+          </tr>
+          <tr>
+            <td><strong style="color: var(--primary-dark);">DEV</strong></td>
+            <td><code>sis123#@!</code></td>
+            <td>
+              <span class="doc-badge badge-blue">COM_ADM_MOB (관리자)</span><br>
+              <span class="doc-badge badge-green" style="margin-top: 4px;">COM_EAM_MOB (점검자)</span>
+            </td>
+            <td>
+              • 개발 및 기능 디버깅 전용 슈퍼계정<br>
+              • 온라인 MES 토큰 미보유 (<strong>동기화 시도 시 차단 알림</strong>)<br>
+              • 비밀번호 변경 불가, <strong><code>dev-db</code> 및 개발자 도구 단독 접근 가능</strong>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 2 -->
+    <section id="tech-2" class="content-card">
+      <h2 class="section-title">2. Vite 6 빌드 파이프라인 & SQLite WASM 복사 훅</h2>
+      <p>PC 브라우저 개발 모드(Vite Dev Server)에서 SQLite 바이너리가 404 에러 없이 로드되도록 Node.js 크로스 플랫폼 스크립트로 자동 복제합니다.</p>
+
+      <h3 class="sub-title">2-1. package.json 크로스 플랫폼 copy:wasm 스크립트</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode('code-wasm-node')">복사</button>
+        <pre><code id="code-wasm-node">"scripts": {
+  "copy:wasm": "node -e \"const fs = require('fs'); fs.mkdirSync('static/assets', { recursive: true }); fs.copyFileSync('node_modules/sql.js/dist/sql-wasm.wasm', 'static/assets/sql-wasm.wasm'); fs.copyFileSync('node_modules/sql.js/dist/sql-wasm.wasm', 'static/sql-wasm.wasm');\"",
+  "postinstall": "npm run copy:wasm",
+  "dev": "npm run copy:wasm && vite dev",
+  "build": "npm run copy:wasm && vite build"
+}</code></pre>
+      </div>
+
+      <h3 class="sub-title">2-2. vite.config.js (버전 자동 주입 및 jeep-sqlite 사전최적화 차단)</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode('code-vite-config')">복사</button>
+        <pre><code id="code-vite-config">import { sveltekit } from '@sveltejs/kit/vite';
+import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'vite';
+import { readFileSync } from 'fs';
+
+// package.json의 version 값을 $env/static/public으로 자동 주입
+const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'));
+process.env.PUBLIC_APP_VERSION = pkg.version;
+
+export default defineConfig({
+  plugins: [tailwindcss(), sveltekit()],
+  optimizeDeps: {
+    exclude: ['jeep-sqlite'] // jeep-sqlite 번들 변형 차단
+  }
+});</code></pre>
+      </div>
+    </section>
+
+    <!-- Section 3 -->
+    <section id="tech-3" class="content-card">
+      <h2 class="section-title">3. 실제 핵심 6대 SQLite 물리 테이블 구조 (복합키 정의)</h2>
+      <p>본 프로젝트에서 가동 중인 6종 물리 테이블의 정밀 복합키(Composite Primary Key) 및 비즈니스 역할입니다.</p>
+
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th>물리 테이블명</th>
+            <th>논리명</th>
+            <th>실제 복합 Primary Key (PK)</th>
+            <th>역할 및 비즈니스 규칙</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>tb_mob_set010</code></td>
+            <td>모바일 환경설정 마스터</td>
+            <td><code>fac_gbn</code> / 단일 레코드 (<code>id=1</code>)</td>
+            <td>Base URL, API 1~9 URI, 최종 동기화 일시, 자동실적전송(auto_send_yn)</td>
+          </tr>
+          <tr>
+            <td><code>tb_mob_set020</code></td>
+            <td>사용자 계정 정보</td>
+            <td><code>fac_gbn, uplo_proc_gbn, mob_user_id</code></td>
+            <td>오프라인 로컬 인증(SHA-256 대조), 소속 공정, 사용자 권한(Role) JSON</td>
+          </tr>
+          <tr>
+            <td><code>tb_mob_std110</code></td>
+            <td>공통 기준코드 마스터</td>
+            <td><code>fac_gbn, uplo_proc_gbn, master_cd, cd_val</code></td>
+            <td>점검구분, 점검방식, 계측단위 등 다국어(한/스페인어) 코드북</td>
+          </tr>
+          <tr>
+            <td><code>tb_mob_std120</code></td>
+            <td>설비 마스터 및 사양제원</td>
+            <td><code>fac_gbn, uplo_proc_gbn, asset_id</code></td>
+            <td>설비명, 설치위치, 설비등급, QR 바코드 태그ID, 세부 기술스펙</td>
+          </tr>
+          <tr>
+            <td><code>tb_mob_std130</code></td>
+            <td>점검 계획 및 체크리스트</td>
+            <td><code>chk_action_no, chk_ordinal, asset_id, chk_fmt, chk_item</code> (5-복합키)</td>
+            <td>당일 점검 오더번호, 점검항목, 관리하한(LL)/상한(UL) 기준 임계치</td>
+          </tr>
+          <tr>
+            <td><code>tb_mob_rst130</code></td>
+            <td>점검 수행 실적 및 송신</td>
+            <td><code>chk_action_no, chk_ordinal, asset_id, chk_fmt, chk_item</code> (5-복합키)</td>
+            <td>작업자가 입력한 실제 계측값, 양부 판정, 송신여부(send_flag 'N'/'Y')</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="alert-box alert-info">
+        💡 <strong>상세 컬럼 명세:</strong> 6개 테이블의 전체 20~40여 개 물리 컬럼 및 타입 정보는 <a href="DB명세서.html"
+          style="color: var(--primary); font-weight: 700;">[DB명세서.html]</a>에 정의되어 있습니다.
+      </div>
+
+      <h3 class="sub-title">3-1. 실시간 가상 DB 웹 탐색기 및 SQL 러너 (<code>/dev-db</code>)</h3>
+      <p>PC 웹 개발 모드(Vite Dev Server) 및 모바일 기기에서 로컬 SQLite의 데이터 적재 상태를 직접 눈으로 확인하고 쿼리를 실행해볼 수 있는 <strong>내장형 가상 DB
+          탐색기(Explorer)</strong> 화면이 탑재되어 있습니다.</p>
+
+      <div class="alert-box alert-warning">
+        <strong>🔒 접근 경로 및 보안 통제:</strong><br>
+        • <strong>진입 경로:</strong> <strong><code>DEV</code> 계정</strong>으로 로그인 시 화면 우측 하단에 <strong>개발자 플로팅
+          도구(🛠️)</strong> 버튼이 노출되며, 서랍 메뉴에서 <strong>[실시간 가상 DB 웹 뷰어]</strong>를 클릭하거나 URL(<code>/dev-db</code>)로 진입할 수
+        있습니다. (<code>ADMIN</code> 계정은 플로팅 도구 미노출 및 접근 차단)<br>
+        • <strong>보안 가드:</strong> 일반 사용자 및 <code>ADMIN</code> 계정 등 <code>DEV_IDS</code>에 미등록된 사용자가 접근 시
+        <code>src/routes/dev-db/+page.svelte</code>의 인라인 세션 가드가 발동하여 홈 화면(<code>/</code>)으로 즉시 강제 리다이렉트됩니다.
+      </div>
+
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th style="width: 28%;">제공 기능</th>
+            <th>기능 설명 및 활용 시나리오</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>테이블 실시간 브라우저</strong></td>
+            <td><code>sqlite_master</code>를 조회하여 내부 테이블을 제외한 6대 물리 테이블의 전체 목록, 총 행(Row) 수, 테이블별 원시 데이터를 실시간 그리드로 표출합니다.
+              복합 PK 컬럼 강조 및 메타데이터 툴팁을 지원합니다.</td>
+          </tr>
+          <tr>
+            <td><strong>전체 컬럼 검색 &amp; 정렬</strong></td>
+            <td>상단 검색창에 키워드 입력 시 전체 컬럼 대상 실시간 클라이언트 필터링을 수행하며, 컬럼 헤더 클릭 시 오름차순/내림차순 정렬을 토글합니다.</td>
+          </tr>
+          <tr>
+            <td><strong>커스텀 SQL 실행기 (SQL Runner)</strong></td>
+            <td>브라우저 내 쿼리 편집기를 통해 <code>SELECT</code>, <code>UPDATE</code>, <code>DELETE</code> 등 임의의 SQL 문을 직접 실행하고,
+              영향받은 행 수 및 실행 결과를 즉각 확인할 수 있습니다.</td>
+          </tr>
+          <tr>
+            <td><strong>네트워크 가상 스위처</strong></td>
+            <td>개발자 플로팅 서랍 메뉴에서 온라인(Wi-Fi 연결)과 오프라인 상태를 1초 만에 토글하여 통신 단절 시 로컬 DB 캐시 처리 및 폴백 동작을 신속하게 검증할 수 있습니다.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 4 -->
+    <section id="tech-4" class="content-card">
+      <h2 class="section-title">4. Wi-Fi 사설망 판정 및 2트랙 온라인 동기화 파이프라인</h2>
+
+      <h3 class="sub-title">4-1. Wi-Fi 사설망 전용 온라인 판정 로직 (src/lib/stores/network.ts)</h3>
+      <p>포스코 아르헨티나 현장 환경상 사설 인트라넷 망이 Wi-Fi로 구축되어 있으므로, <strong>오직 Wi-Fi에 연결되었을 때만 온라인으로 판정</strong>하며 셀룰러(LTE/5G) 접속은
+        오프라인으로 분기합니다.</p>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode('code-network-wifi')">복사</button>
+        <pre><code id="code-network-wifi">// src/lib/stores/network.ts
+Network.addListener('networkStatusChange', (status: ConnectionStatus) => {
+  // WIFI에 연결된 상태일 때만 온라인으로 판별 (Cellular 등은 오프라인 처리)
+  // 사설망 환경(외부 인터넷 연결 없음) 지원을 위해 status.connected 조건 제외
+  const isWifi = status.connectionType === 'wifi';
+  store.set(isWifi);
+});</code></pre>
+      </div>
+
+      <h3 class="sub-title">4-2. 인터넷 가상 연결망 시뮬레이터 (개발자용 Network Override)</h3>
+      <p>단말기의 실제 Wi-Fi를 끄거나 랜선을 뽑지 않고도, 앱의 온/오프라인 분기 처리(2-트랙 로직)를 브라우저 및 기기에서 원클릭으로 테스트할 수 있도록 <strong>인터넷 가상
+          연결망(Network Override)</strong> 기능이 구현되어 있습니다.</p>
+
+      <div class="alert-box alert-info">
+        <strong>⚙️ 동작 원리 및 UI 컨트롤:</strong><br>
+        • <strong>상태 오버라이드 메커니즘 (<code>src/lib/stores/network.ts</code>):</strong> <code>isOnline</code> 스토어의
+        <code>setOverride(boolean)</code> 메서드를 통해 실제 하드웨어 네트워크 리스너의 이벤트를 무시하고, 개발자가 지정한 가상 연결 상태를 앱 전체에 주입합니다.<br>
+        • <strong>개발자 슬라이딩 토글 스위치 (<code>src/routes/+layout.svelte</code>):</strong> <code>DEV</code> 계정 로그인 시 우측 하단 플로팅
+        툴 서랍에 <strong>[인터넷 가상 연결망]</strong> 스위치가 활성화됩니다.<br>
+        &nbsp;&nbsp;🟢 <strong>온라인 (ON):</strong> <code>온라인(Online) 상태 - API 수신 대기</code> ➔ 온라인 로그인 및 MES API 송수신
+        테스트.<br>
+        &nbsp;&nbsp;🔴 <strong>오프라인 (OFF):</strong> <code>오프라인(Offline) 상태 - 로컬 보장</code> ➔ SQLite 오프라인 로그인, 실적 로컬 저장,
+        <code>send_flag='N'</code> 적재 등 완전 오프라인 현장 동작 검증.
+      </div>
+
+      <h3 class="sub-title">4-3. 온라인 MES API 동기화 파이프라인 (src/lib/stores/sync.ts)</h3>
+      <ol class="styled-list">
+        <li><strong>세션 토큰 선검증 (ensureValidSession):</strong> API 호출 전 Access Token 유효성을 확인하고, 만료 시 Refresh Token으로 자동
+          갱신합니다.</li>
+        <li><strong>점검 실적 송신 ([실적 송신] 버튼 또는 autoSendYn 트리거):</strong>
+          <ul style="margin-top: 4px;">
+            <li><code class="inline-code">SELECT * FROM tb_mob_rst130 WHERE send_flag = 'N'</code>로 미송신 건 추출.</li>
+            <li>백엔드 실적 저장 API (<code class="inline-code">rst01Api</code>)로 JSON 페이로드 일괄 업로드.</li>
+            <li>서버 200 OK 수신 즉시 해당 복합키 건들에 대해 <code class="inline-code">UPDATE tb_mob_rst130 SET send_flag = 'Y'</code>
+              처리.</li>
+          </ul>
+        </li>
+        <li><strong>마스터 데이터 수신 ([데이터 수신] 버튼 트리거):</strong>
+          <ul style="margin-top: 4px;">
+            <li><code class="inline-code">userApi</code>, <code class="inline-code">std02Api</code>, <code
+                class="inline-code">std03Api</code>, <code class="inline-code">std01Api</code> 순차 호출.</li>
+            <li>로컬 4대 마스터 테이블(<code class="inline-code">tb_mob_set020, std120, std130, std110</code>)에 대량 벌크 UPSERT.
+            </li>
+          </ul>
+        </li>
+        <li><strong>1년 경과 실적 자동 정리:</strong> 송신 완료된 건 중 1년이 지난 레코드는 로컬 SQLite 용량 관리를 위해 자동 삭제합니다.</li>
+      </ol>
+    </section>
+
+    <!-- Section 5 -->
+    <section id="tech-5" class="content-card">
+      <h2 class="section-title">5. 오프라인 엑셀 동기화 및 Scoped Storage 권한 관리 (src/lib/services/excel.ts)</h2>
+      <p>사설망 Wi-Fi 연결조차 불가능한 완전 오프라인 현장에서도 점검 업무를 지속할 수 있도록 엑셀(XLSX) 기반의 마스터 로드 및 실적 추출을 지원합니다.</p>
+
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th>동작 구분</th>
+            <th>파싱 함수 및 타깃 테이블</th>
+            <th>설명</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>사용자 계정 로드</strong></td>
+            <td><code>parseInspectorInfo()</code> ➔ <code>tb_mob_set020</code></td>
+            <td>현장 단말기에 복사된 사용자 엑셀 파일을 읽어 로컬 인증 정보 갱신</td>
+          </tr>
+          <tr>
+            <td><strong>설비 사양 로드</strong></td>
+            <td><code>parseEquipmentSpec()</code> ➔ <code>tb_mob_std120</code></td>
+            <td>설비 제원 및 마스터 엑셀 파싱 후 로컬 SQLite UPSERT</td>
+          </tr>
+          <tr>
+            <td><strong>점검 계획 로드</strong></td>
+            <td><code>parseInspectionPlan()</code> ➔ <code>tb_mob_std130</code></td>
+            <td>당일 점검 대상 오더 및 체크리스트 기준치 벌크 임포트</td>
+          </tr>
+          <tr>
+            <td><strong>기준 코드 로드</strong></td>
+            <td><code>parseInspectionStds()</code> ➔ <code>tb_mob_std110</code></td>
+            <td>공통 기준코드 및 점검 항목 코드북 파싱</td>
+          </tr>
+          <tr>
+            <td><strong>점검 실적 내보내기</strong></td>
+            <td><code>exportInspectionResultsToExcel()</code></td>
+            <td>로컬 <code>tb_mob_rst130</code> 실적을 엑셀로 변환하여 <code>Download/</code> 폴더로 추출</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="alert-box alert-warning">
+        ⚠️ <strong>Android 11+ Scoped Storage 대응:</strong><br>
+        타 앱(PC 파일 전송 등)에 의해 기기 공용 저장소에 생성된 엑셀 파일을 읽고, 동기화 완료 후 중복 임포트 방지를 위해 자동 삭제하려면 자체 네이티브 플러그인인 <code
+          class="inline-code">ManageStoragePlugin</code>을 통해 <strong>모든 파일 관리 권한(MANAGE_EXTERNAL_STORAGE)</strong>이 승인되어
+        있어야 합니다.
+      </div>
+    </section>
+
+    <footer>
+      <p>SecureScan Ops Documentation Portal &copy; 2026 Maintenance Engineering Team</p>
+      <a href="#"
+        style="color: var(--primary); text-decoration: none; font-weight: 600; display: inline-block; margin-top: 10px;">⬆️
+        맨 위로 이동</a>
+    </footer>
+  </div>
+</body>
+
+</html>

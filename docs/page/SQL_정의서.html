@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>화면·기능별 프로그램 SQL 정의서 | POAR Inspection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-code: #0f172a;
+      
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      
+      --accent: #2563eb;
+      --accent-light: #dbeafe;
+      --emerald: #059669;
+      --emerald-light: #d1fae5;
+      
+      --border: #e2e8f0;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 24px 80px 24px;
+    }
+
+    /* Global Nav */
+    .top-portal-nav {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow-sm);
+    }
+    .top-portal-nav-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .portal-logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: var(--primary-dark);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .portal-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .portal-link {
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      text-decoration: none;
+      padding: 5px 11px;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+    }
+    .portal-link:hover, .portal-link.active {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+    }
+
+    /* Hero Banner */
+    .doc-hero {
+      background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 34px 32px;
+      margin: 28px 0 24px 0;
+      box-shadow: var(--shadow-sm);
+    }
+    .doc-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      background: #dbeafe;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+    .doc-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.15rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+    .doc-desc {
+      color: var(--text-sub);
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+
+    /* Screen Nav Sticky Bar */
+    .sticky-screen-bar {
+      position: sticky;
+      top: 57px;
+      z-index: 999;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 0;
+      margin-bottom: 28px;
+    }
+    .screen-nav-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .screen-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .screen-chip {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-main);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 5px 11px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .screen-chip:hover {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border-color: var(--primary);
+    }
+    .search-input-box {
+      position: relative;
+      min-width: 280px;
+    }
+    .search-input {
+      width: 100%;
+      padding: 7px 14px 7px 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      font-size: 0.86rem;
+      color: var(--text-main);
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+      font-size: 0.82rem;
+    }
+
+    /* Screen Section */
+    .screen-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      margin-bottom: 36px;
+      box-shadow: var(--shadow-sm);
+    }
+    .screen-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--bg-subtle);
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .screen-title-area {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .screen-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .screen-route-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.78rem;
+      color: var(--primary-dark);
+      background: var(--primary-light);
+      padding: 3px 8px;
+      border-radius: 4px;
+      width: fit-content;
+    }
+    .screen-desc {
+      font-size: 0.92rem;
+      color: var(--text-sub);
+      line-height: 1.55;
+    }
+    .screen-count-badge {
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    /* Feature Block */
+    .feature-card {
+      background: #fafcff;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: all 0.15s ease;
+    }
+    .feature-card:last-child {
+      margin-bottom: 0;
+    }
+    .feature-card:hover {
+      border-color: #cbd5e1;
+      box-shadow: var(--shadow-sm);
+    }
+    .feature-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .feature-badge {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+    .sql-id-badge {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+    .feature-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      flex: 1;
+    }
+    .feature-file {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.76rem;
+      color: #64748b;
+      background: #ffffff;
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* Meta Details */
+    .feature-meta-grid {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 12px;
+      margin-bottom: 14px;
+      font-size: 0.86rem;
+    }
+    @media (max-width: 800px) {
+      .feature-meta-grid { grid-template-columns: 1fr; }
+    }
+    .meta-item {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+    }
+    .meta-item strong {
+      display: block;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      letter-spacing: 0.03em;
+    }
+    .meta-item span {
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+
+    /* Code Box */
+    .code-box {
+      position: relative;
+      background: #0f172a;
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      overflow-x: auto;
+    }
+    .code-box pre {
+      margin: 0;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: #38bdf8;
+      line-height: 1.55;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    footer {
+      text-align: center;
+      padding-top: 36px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 60px;
+    }
+  </style>
+  <script>
+    function copyCode(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('SQL 구문이 클립보드에 복사되었습니다.');
+      }).catch(err => {
+        console.error('복사 실패:', err);
+      });
+    }
+
+    function filterQueries() {
+      const q = document.getElementById('searchQuery').value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.feature-card');
+
+      cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        if (text.includes(q)) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</head>
+<body>
+  <!-- Nav -->
+  <nav class="top-portal-nav">
+    <div class="top-portal-nav-inner">
+      <a href="../문서_허브.html" class="portal-logo">
+        <span>📑</span> POAR Inspection Docs
+      </a>
+      <div class="portal-links">
+        <a href="../문서_허브.html" class="portal-link">통합 허브</a>
+        <a href="DB명세서.html" class="portal-link">DB명세서</a>
+        <a href="SQL_정의서.html" class="portal-link active">SQL정의서</a>
+        <a href="앱_배포_가이드.html" class="portal-link">앱 배포 가이드</a>
+        <a href="프로젝트_규칙.html" class="portal-link">프로젝트 규칙</a>
+        <a href="기술_가이드.html" class="portal-link">기술 가이드</a>
+        <a href="화면_개발_가이드.html" class="portal-link">화면 개발 가이드</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Hero Header -->
+    <header class="doc-hero">
+      <span class="doc-badge">100% Code-Aligned Screen & Feature Centric SQL Catalog</span>
+      <h1 class="doc-title">🖥️ 화면·기능별 프로그램 SQL 정의서</h1>
+      <p class="doc-desc">
+        스마트 QR 설비점검 모바일 애플리케이션의 <strong>10대 사용자 화면 및 백그라운드 프로세스</strong>와 <strong>33개 실제 비즈니스 기능(Feature) 단위</strong>로 앱 소스 코드에서 100% 실존하며 호출·실행되는 SQL 쿼리의 소스파일 위치, 실행 시점, 파라미터 바인딩, 물리 구문을 투명하게 명시합니다.
+      </p>
+    </header>
+
+    <!-- Screen Nav Sticky Bar -->
+    <div class="sticky-screen-bar">
+      <div class="screen-nav-inner">
+        <div class="screen-chips">
+          <a href="#screen-login" class="screen-chip">
+            <span>🔐</span>
+            <span>사용자 로그인 화면 (5)</span>
+          </a>
+          <a href="#screen-dashboard" class="screen-chip">
+            <span>📊</span>
+            <span>메인 대시보드 화면 (2)</span>
+          </a>
+          <a href="#screen-scanner" class="screen-chip">
+            <span>📷</span>
+            <span>QR / 바코드 스캐너 화면 (1)</span>
+          </a>
+          <a href="#screen-maintenance" class="screen-chip">
+            <span>📋</span>
+            <span>점검 계획 목록 화면 (3)</span>
+          </a>
+          <a href="#screen-detail" class="screen-chip">
+            <span>📝</span>
+            <span>점검 수행 상세 화면 (4)</span>
+          </a>
+          <a href="#screen-history" class="screen-chip">
+            <span>📜</span>
+            <span>점검 이력 화면 (1)</span>
+          </a>
+          <a href="#screen-specs" class="screen-chip">
+            <span>🏭</span>
+            <span>설비 사양 화면 (1)</span>
+          </a>
+          <a href="#screen-users" class="screen-chip">
+            <span>👥</span>
+            <span>사용자 관리 및 비밀번호 변경 화면 (4)</span>
+          </a>
+          <a href="#screen-sync" class="screen-chip">
+            <span>🔄</span>
+            <span>데이터 동기화 백그라운드 프로세스 (7)</span>
+          </a>
+          <a href="#screen-devdb" class="screen-chip">
+            <span>🛠️</span>
+            <span>개발자 DB 관리 화면 (5)</span>
+          </a>
+        </div>
+        <div class="search-input-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchQuery" class="search-input" placeholder="화면, 기능명, SQL ID, 소스 파일 검색..." onkeyup="filterQueries()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: 화면 1. 사용자 로그인 화면 -->
+    <section id="screen-login" class="screen-section">
+      <div class="screen-header">
+        <div class="screen-title-area">
+          <h2 class="screen-title">
+            <span>🔐</span>
+            <span>화면 1. 사용자 로그인 화면</span>
+          </h2>
+          <span class="screen-route-badge">📁 src/lib/components/LoginScreen.svelte & src/lib/services/authService.ts</span>
+          <p class="screen-desc">오프라인/온라인 로그인 인증을 수행하고, 사번 기반 세션 정보(성명, 상공정/하공정, 권한) 및 앱 환경설정(API URL, 기본언어)을 로딩하는 진입 화면입니다.</p>
+        </div>
+        <span class="screen-count-badge">기능 5개</span>
+      </div>
+
+      <div class="features-list">
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-LOGIN-01</span>
+            <span class="feature-title">오프라인 로그인: 사번 및 암호화 비밀번호 일괄 검증 & 세션 생성</span>
+            <span class="sql-id-badge">SQL-AUTH-001</span>
+            <span class="feature-file">📁 src/lib/services/authService.ts (offlineLoginFallback, 185행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>오프라인 로그인 버튼 터치 시 단독 호출. 암호화된 비밀번호(SHA-256)를 로컬 계정 데이터와 대조하며, 일치 시 성명, 공정구분, 권한역할을 단일 쿼리로 한 번에 추출</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] mob_user_id (사번), [2] mob_user_pw (SHA-256 암호화된 비밀번호)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-auth-001')">SQL 복사</button>
+            <pre><code id="code-sql-auth-001">SELECT * FROM tb_mob_set020 WHERE mob_user_id = ? AND mob_user_pw = ?;</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-LOGIN-02</span>
+            <span class="feature-title">온라인 로그인: 서버 토큰 응답 후 로컬 프로필(성명/공정구분) 보강 조회</span>
+            <span class="sql-id-badge">SQL-AUTH-002</span>
+            <span class="feature-file">📁 src/lib/services/authService.ts (resolveLocalUser, 114행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>온라인 MES API 로그인 성공 직후 호출. 서버 토큰 응답에 작업자의 한글 성명이나 세부 공정코드(상공정/하공정)가 누락되었을 때 로컬 SQLite DB에서 해당 사번 정보를 조회하여 세션($auth)에 확정 반영</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] mob_user_id (사번)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-auth-002')">SQL 복사</button>
+            <pre><code id="code-sql-auth-002">SELECT mob_user_nm, uplo_proc_gbn FROM tb_mob_set020 WHERE mob_user_id = ?;</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-LOGIN-03</span>
+            <span class="feature-title">온라인 로그인: 오프라인 계정 자동 적재 전 기존재 여부 확인</span>
+            <span class="sql-id-badge">SQL-AUTH-003</span>
+            <span class="feature-file">📁 src/lib/services/authService.ts (saveOfflineUserIfNotExist, 437행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>온라인 로그인 성공 직후 호출. 최초 로그인한 신규 작업자 계정을 향후 오프라인에서도 로그인할 수 있도록 로컬 DB에 자동 INSERT하기 전, 이미 존재하는지 여부를 카운트 체크</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] mob_user_id (사번)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-auth-003')">SQL 복사</button>
+            <pre><code id="code-sql-auth-003">SELECT COUNT(*) as cnt FROM tb_mob_set020 WHERE mob_user_id = ?;</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-LOGIN-04</span>
+            <span class="feature-title">온라인 로그인: 신규 작업자 오프라인 계정 로컬 DB 자동 적재</span>
+            <span class="sql-id-badge">SQL-AUTH-004</span>
+            <span class="feature-file">📁 src/lib/services/authService.ts (saveOfflineUserIfNotExist, 460행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>온라인 로그인 시 로컬 DB에 등록되지 않은 신규 사번일 때 호출. 초기 비밀번호를 사번으로 암호화하여 tb_mob_set020에 자동 등록</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] fac_gbn, [2] uplo_proc_gbn, [3] mob_user_id, [4] mob_user_nm, [5] co_id, [6] roles_json, [7] mob_user_pw</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-auth-004')">SQL 복사</button>
+            <pre><code id="code-sql-auth-004">INSERT INTO tb_mob_set020 (fac_gbn, uplo_proc_gbn, mob_user_id, mob_user_nm, co_id, roles_json, mob_user_pw) VALUES (?, ?, ?, ?, ?, ?, ?);</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-LOGIN-05</span>
+            <span class="feature-title">앱 환경설정 및 서버 접속 API Base URL 로딩</span>
+            <span class="sql-id-badge">SQL-CFG-001</span>
+            <span class="feature-file">📁 src/lib/services/database.ts (getConfig, 743행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>앱 최초 구동 및 로그인 화면 렌더링 시 로컬에 저장된 기본 언어, 공장구분, 서버 API 엔드포인트 목록을 단일 레코드(id=1)에서 로딩</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>없음 (단일 레코드 id=1 제약)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-cfg-001')">SQL 복사</button>
+            <pre><code id="code-sql-cfg-001">SELECT * FROM tb_mob_set010 LIMIT 1;</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen: 화면 2. 메인 대시보드 화면 -->
+    <section id="screen-dashboard" class="screen-section">
+      <div class="screen-header">
+        <div class="screen-title-area">
+          <h2 class="screen-title">
+            <span>📊</span>
+            <span>화면 2. 메인 대시보드 화면</span>
+          </h2>
+          <span class="screen-route-badge">📁 src/lib/components/DashboardScreen.svelte</span>
+          <p class="screen-desc">로그인 직후 표시되는 메인 런처 화면입니다. 모바일 성능과 즉각적인 반응성을 위해 무거운 집계 쿼리를 배제하고, 5대 핵심 업무(점검시작, 점검이력, 데이터수신, 실적송신, 설비사양)로 즉시 분기하는 액션 그리드 카드를 제공합니다.</p>
+        </div>
+        <span class="screen-count-badge">기능 2개</span>
+      </div>
+
+      <div class="features-list">
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-DASH-01</span>
+            <span class="feature-title">[실적 송신] 버튼 터치 시 미전송(send_flag='N') 실적 데이터셋 추출</span>
+            <span class="sql-id-badge">SQL-DASH-001</span>
+            <span class="feature-file">📁 src/lib/components/DashboardScreen.svelte -> src/lib/stores/sync.ts (transmitResults, 1858행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>대시보드의 '실적 송신' 버튼 터치 시 호출. 작업자 소속 공정의 미전송(send_flag='N' 또는 NULL) 상태인 점검 실적 레코드를 추출하여 전송 페이로드 구성</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] directnm_emp_no (사번), [2] fac_gbn (공장구분), [3] uplo_proc_gbn (공정구분)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-dash-001')">SQL 복사</button>
+            <pre><code id="code-sql-dash-001">SELECT * FROM tb_mob_rst130 WHERE directnm_emp_no = ? AND fac_gbn = ? AND uplo_proc_gbn = ? AND (send_flag = &#x27;N&#x27; OR send_flag IS NULL);</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-DASH-02</span>
+            <span class="feature-title">[데이터 수신] 버튼 터치 시 동기화 기준일자 및 API URI 확인</span>
+            <span class="sql-id-badge">SQL-DASH-002</span>
+            <span class="feature-file">📁 src/lib/components/DashboardScreen.svelte -> src/lib/stores/sync.ts (triggerSync, 619행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>대시보드의 '데이터 수신' 버튼 터치 시 온라인 API 또는 오프라인 엑셀 파일 선택 모달을 통해 4대 마스터 테이블 일괄 동기화(Bulk Upsert) 진입</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>없음</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-dash-002')">SQL 복사</button>
+            <pre><code id="code-sql-dash-002">SELECT * FROM tb_mob_set010 LIMIT 1;</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen: 화면 3. QR / 바코드 스캐너 화면 -->
+    <section id="screen-scanner" class="screen-section">
+      <div class="screen-header">
+        <div class="screen-title-area">
+          <h2 class="screen-title">
+            <span>📷</span>
+            <span>화면 3. QR / 바코드 스캐너 화면</span>
+          </h2>
+          <span class="screen-route-badge">📁 src/routes/scanner/+page.svelte</span>
+          <p class="screen-desc">설비에 부착된 QR코드 또는 바코드를 인식하여 물리 설비 마스터(tb_mob_std120)에 등록된 유효 설비인지 검증하고 설비명을 노출하는 화면입니다.</p>
+        </div>
+        <span class="screen-count-badge">기능 1개</span>
+      </div>
+
+      <div class="features-list">
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-SCAN-01</span>
+            <span class="feature-title">스캔된 설비 코드의 물리 마스터 존재 여부 검증</span>
+            <span class="sql-id-badge">SQL-SCAN-001</span>
+            <span class="feature-file">📁 src/routes/scanner/+page.svelte (handleQRScan, 49행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>카메라로 QR/바코드 인식 성공 즉시 실행. 스캔된 문자열을 설비 ID(asset_id)와 대조하여 등록된 설비명(asset_nm)을 반환하고 점검 진입 허용</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] targetId (스캔된 설비 식별자)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-scan-001')">SQL 복사</button>
+            <pre><code id="code-sql-scan-001">SELECT asset_nm FROM tb_mob_std120 WHERE asset_id = ? LIMIT 1;</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen: 화면 4. 점검 계획 목록 화면 -->
+    <section id="screen-maintenance" class="screen-section">
+      <div class="screen-header">
+        <div class="screen-title-area">
+          <h2 class="screen-title">
+            <span>📋</span>
+            <span>화면 4. 점검 계획 목록 화면</span>
+          </h2>
+          <span class="screen-route-badge">📁 src/routes/maintenance/+page.svelte</span>
+          <p class="screen-desc">선택 일자 및 작업자 소속 공정에 할당된 점검 대상 설비 목록을 4대 테이블 복합 조인으로 조회하고, 화면 내 설비 QR 스캔 검증을 지원하는 화면입니다.</p>
+        </div>
+        <span class="screen-count-badge">기능 3개</span>
+      </div>
+
+      <div class="features-list">
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-MAINT-01</span>
+            <span class="feature-title">당일 점검 대상 설비 및 실적 상태 복합 조회 (4대 테이블 JOIN)</span>
+            <span class="sql-id-badge">SQL-PLAN-001</span>
+            <span class="feature-file">📁 src/lib/services/database.ts (getInspectionTasksByDate, 1622행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>점검 계획 목록 화면 진입 및 상단 날짜 변경 시 호출. 점검계획(p), 설비사양(e), 점검실적(r), 공통코드(c1,c3,c4)를 한 번에 조인하여 설비별 점검 항목 및 완료 여부(chk_rslt)를 일괄 로딩</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] 언어코드(c1), [2] 언어코드(c3), [3] 언어코드(c4), [4] chk_plan_day (YYYYMMDD), [5] empId (사번), [6] uploProcGbn (공정)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-plan-001')">SQL 복사</button>
+            <pre><code id="code-sql-plan-001">SELECT 
+  p.chk_action_no,
+  p.chk_action_nm,
+  p.chk_ordinal,
+  p.chk_serno,
+  p.asset_id,
+  p.asset_nm,
+  p.chk_item,
+  COALESCE(c1.cd_nm, p.chk_item) as chk_item_nm,
+  p.chk_dtl,
+  p.chk_gbn,
+  p.cycle_gbn,
+  COALESCE(c3.cd_nm, p.chk_gbn) as chk_gbn_nm,
+  COALESCE(c4.cd_nm, p.cycle_gbn) as cycle_gbn_nm,
+  e.install_loc,
+  COALESCE(r.chk_rslt, p.chk_rslt) as chk_rslt
+FROM tb_mob_std130 p
+LEFT JOIN tb_mob_std120 e ON p.asset_id = e.asset_id AND p.fac_gbn = e.fac_gbn AND p.uplo_proc_gbn = e.uplo_proc_gbn
+LEFT JOIN tb_mob_rst130 r ON p.asset_id = r.asset_id 
+  AND p.chk_action_no = r.chk_action_no 
+  AND p.chk_ordinal = r.chk_ordinal 
+  AND p.chk_serno = r.chk_serno
+  AND p.chk_fmt = r.chk_fmt
+  AND p.chk_plan_day = r.chk_plan_day
+  AND p.chk_item = r.chk_item
+LEFT JOIN tb_mob_std110 c1 ON c1.master_cd = &#x27;EAM_CHK_ITEM&#x27; AND c1.cd_val = p.chk_item AND c1.lang = ? AND c1.use_yn = &#x27;Y&#x27;
+LEFT JOIN tb_mob_std110 c3 ON c3.master_cd = &#x27;EAM_CHK_GBN&#x27; AND c3.cd_val = p.chk_gbn AND c3.lang = ? AND c3.use_yn = &#x27;Y&#x27;
+LEFT JOIN tb_mob_std110 c4 ON c4.master_cd = &#x27;EAM_CYCLE_GBN&#x27; AND c4.cd_val = p.cycle_gbn AND c4.lang = ? AND c4.use_yn = &#x27;Y&#x27;
+WHERE p.chk_plan_day = ? AND p.directnm_emp_no = ? AND p.uplo_proc_gbn = ?
+ORDER BY p.chk_action_no ASC, CAST(p.chk_ordinal AS INTEGER) ASC, CAST(p.chk_serno AS INTEGER) ASC;</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-MAINT-02</span>
+            <span class="feature-title">점검 화면 내 설비 QR 스캔 시 당일 점검계획 유효성 검증</span>
+            <span class="sql-id-badge">SQL-PLAN-002</span>
+            <span class="feature-file">📁 src/routes/maintenance/+page.svelte (handleQRScan, 172행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>점검 목록 화면 상단 QR 스캔 버튼으로 설비 바코드를 스캔했을 때 호출. 당일 작업자에게 할당된 유효한 점검 계획인지 즉시 대조</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] chk_plan_day (YYYYMMDD), [2] asset_id (스캔값), [3] empId (사번), [4] uploProcGbn (공정)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-plan-002')">SQL 복사</button>
+            <pre><code id="code-sql-plan-002">SELECT asset_id, chk_action_no, chk_ordinal, chk_serno FROM tb_mob_std130 WHERE chk_plan_day = ? AND asset_id = ? AND directnm_emp_no = ? AND uplo_proc_gbn = ? LIMIT 1;</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-MAINT-03</span>
+            <span class="feature-title">스캔 설비의 마스터 등록 여부 폴백 검증</span>
+            <span class="sql-id-badge">SQL-PLAN-003</span>
+            <span class="feature-file">📁 src/routes/maintenance/+page.svelte (handleQRScan, 188행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>당일 점검 계획이 없는 경우, 설비 마스터(tb_mob_std120)에 등록된 설비인지 미등록 설비인지 구분하여 오류 메시지 분기</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] targetId (설비 식별자)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-plan-003')">SQL 복사</button>
+            <pre><code id="code-sql-plan-003">SELECT asset_id FROM tb_mob_std120 WHERE asset_id = ? LIMIT 1;</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen: 화면 5. 점검 수행 상세 화면 -->
+    <section id="screen-detail" class="screen-section">
+      <div class="screen-header">
+        <div class="screen-title-area">
+          <h2 class="screen-title">
+            <span>📝</span>
+            <span>화면 5. 점검 수행 상세 화면</span>
+          </h2>
+          <span class="screen-route-badge">📁 src/routes/maintenance/[id]/+page.svelte</span>
+          <p class="screen-desc">특정 설비의 5대 복합키 세부 점검 체크리스트를 로딩하고, 과거 점검 이력 추이 확인 및 작업자의 판정 결과(S/N/F)와 측정값을 로컬 실적 테이블에 기록(UPSERT)하는 핵심 업무 화면입니다.</p>
+        </div>
+        <span class="screen-count-badge">기능 4개</span>
+      </div>
+
+      <div class="features-list">
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-DET-01</span>
+            <span class="feature-title">점검 대상 설비 단건 사양 제원 로딩</span>
+            <span class="sql-id-badge">SQL-DET-001</span>
+            <span class="feature-file">📁 src/routes/maintenance/[id]/+page.svelte (341행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>점검 상세 화면 진입 시 호출. 상단 설비 헤더 영역에 설비명, 설치위치, 설비규격(spec) 정보 표시</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] id (설비 식별자)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-det-001')">SQL 복사</button>
+            <pre><code id="code-sql-det-001">SELECT * FROM tb_mob_std120 WHERE asset_id = ? LIMIT 1;</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-DET-02</span>
+            <span class="feature-title">설비별 상세 점검 체크리스트 및 기등록 실적 조회 (4대 테이블 JOIN)</span>
+            <span class="sql-id-badge">SQL-DET-002</span>
+            <span class="feature-file">📁 src/lib/services/database.ts (getInspectionPlans, 1682행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>점검 상세 체크리스트 렌더링 시 호출. 대상 설비의 모든 세부 점검 항목과 함께, 기존에 입력된 실적(saved_chk_rslt, saved_mea_val, saved_special_note) 및 기준코드명을 복합 매핑하여 로딩</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] 언어코드(c1), [2] 언어코드(c2), [3] 언어코드(c3), [4] 언어코드(c4), [5] asset_id (설비ID), [6] planDay (YYYYMMDD), [7] empId (사번)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-det-002')">SQL 복사</button>
+            <pre><code id="code-sql-det-002">SELECT 
+  p.*,
+  r.chk_rslt as saved_chk_rslt,
+  r.mea_val as saved_mea_val,
+  r.special_note as saved_special_note,
+  c1.cd_nm as chk_item_nm,
+  c2.cd_nm as chk_fmt_nm,
+  c3.cd_nm as chk_gbn_nm,
+  c4.cd_nm as cycle_gbn_nm
+FROM tb_mob_std130 p
+LEFT JOIN tb_mob_rst130 r ON p.asset_id = r.asset_id 
+  AND p.chk_action_no = r.chk_action_no 
+  AND p.chk_ordinal = r.chk_ordinal 
+  AND p.chk_serno = r.chk_serno 
+  AND p.chk_fmt = r.chk_fmt 
+  AND p.chk_item = r.chk_item
+LEFT JOIN tb_mob_std110 c1 ON c1.master_cd = &#x27;EAM_CHK_ITEM&#x27; AND c1.cd_val = p.chk_item AND c1.lang = ?
+LEFT JOIN tb_mob_std110 c2 ON c2.master_cd = &#x27;EAM_CHK_FMT&#x27; AND c2.cd_val = p.chk_fmt AND c2.lang = ?
+LEFT JOIN tb_mob_std110 c3 ON c3.master_cd = &#x27;EAM_CHK_GBN&#x27; AND c3.cd_val = p.chk_gbn AND c3.lang = ?
+LEFT JOIN tb_mob_std110 c4 ON c4.master_cd = &#x27;EAM_CYCLE_GBN&#x27; AND c4.cd_val = p.cycle_gbn AND c4.lang = ?
+WHERE p.asset_id = ? AND p.chk_plan_day = ? AND p.directnm_emp_no = ?
+ORDER BY CAST(p.chk_ordinal AS INTEGER) ASC;</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-DET-03</span>
+            <span class="feature-title">특정 점검 항목의 최근 20건 과거 점검 이력 추이 조회</span>
+            <span class="sql-id-badge">SQL-DET-003</span>
+            <span class="feature-file">📁 src/lib/services/database.ts (getItemHistory, 1729행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>체크리스트 항목별 '이력 보기' 팝업 터치 시 호출. 과거 측정값(mea_val) 및 판정(chk_rslt) 이력 20건을 일자 역순으로 조회하여 현장 이상 유무 판단 지원</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] asset_id (설비 식별자), [2] chk_item (점검 항목 코드)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-det-003')">SQL 복사</button>
+            <pre><code id="code-sql-det-003">SELECT 
+  chk_plan_day,
+  COALESCE(chk_end_dtm, chk_sta_dtm) as raw_timestamp,
+  mea_val,
+  chk_rslt
+FROM tb_mob_rst130
+WHERE asset_id = ?
+  AND chk_item = ?
+  AND (
+    (mea_val IS NOT NULL AND TRIM(mea_val) != &#x27;&#x27;)
+    OR
+    (chk_rslt IS NOT NULL AND TRIM(chk_rslt) != &#x27;&#x27;)
+  )
+ORDER BY chk_plan_day DESC, raw_timestamp DESC
+LIMIT 20;</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-DET-04</span>
+            <span class="feature-title">점검 실적 로컬 저장 및 전송 대기(send_flag='N') 기록</span>
+            <span class="sql-id-badge">SQL-DET-004</span>
+            <span class="feature-file">📁 src/lib/services/database.ts (saveInspection, 1011행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>점검 완료/임시저장 버튼 터치 시 실행. 입력된 점검결과(판정, 측정값, 시작/종료일시, 특기사항)를 5대 복합키 기준으로 tb_mob_rst130에 UPSERT하고 send_flag를 'N'으로 기록</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1]~[36] 점검 실적 36개 컬럼 전체 바인딩 매개변수</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-det-004')">SQL 복사</button>
+            <pre><code id="code-sql-det-004">INSERT OR REPLACE INTO tb_mob_rst130 (
+  chk_gbn, chk_gbn_nm, cycle_gbn, cycle_gbn_nm, chk_action_no, chk_plan_day, 
+  chk_ordinal, chk_serno, asset_id, chk_fmt, chk_fmt_nm, chk_item, 
+  chk_item_nm, chk_dtl, chk_unit, chk_unit_nm, chk_ll, chk_ref, chk_ul, 
+  directnm_emp_no, directnm_emp_nm, chk_rslt, chk_rslt_nm, chk_work_gbn, 
+  chk_sta_dtm, chk_end_dtm, mea_val, special_note, fac_gbn, uplo_proc_gbn, 
+  chk_action_nm, asset_nm, chk_item_unit, abnr_val_yn, impt_asset_yn, send_flag
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, &#x27;N&#x27;);</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen: 화면 6. 점검 이력 화면 -->
+    <section id="screen-history" class="screen-section">
+      <div class="screen-header">
+        <div class="screen-title-area">
+          <h2 class="screen-title">
+            <span>📜</span>
+            <span>화면 6. 점검 이력 화면</span>
+          </h2>
+          <span class="screen-route-badge">📁 src/routes/history/+page.svelte</span>
+          <p class="screen-desc">로컬 단말기에 저장된 과거 점검 실적 내역을 기간별, 공정별, 액션번호별로 그룹핑하여 전체 항목 대비 완료 항목 수와 전송 상태를 조회하는 화면입니다.</p>
+        </div>
+        <span class="screen-count-badge">기능 1개</span>
+      </div>
+
+      <div class="features-list">
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-HIST-01</span>
+            <span class="feature-title">기간별/공정별 점검 완료 이력 그룹 조회 (3대 테이블 JOIN & GROUP BY)</span>
+            <span class="sql-id-badge">SQL-HIST-001</span>
+            <span class="feature-file">📁 src/lib/services/database.ts (getInspectionHistory, 1760행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>이력 화면 진입 및 검색/기간 필터 변경 시 호출. 점검계획(p), 실적(r), 설비사양(e)을 조인하고 chk_action_no와 chk_plan_day로 그룹핑하여 총 점검항목수, 완료건수, 미전송 여부를 조회</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] empId (사번), [2] uploProcGbn (공정), [3] startDate (시작일 YYYYMMDD), [4] endDate (종료일 YYYYMMDD)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-hist-001')">SQL 복사</button>
+            <pre><code id="code-sql-hist-001">SELECT 
+  p.chk_action_no || &#x27;_&#x27; || p.chk_plan_day AS id,
+  p.chk_action_no,
+  p.chk_plan_day,
+  COALESCE(MAX(r.chk_end_dtm), MAX(r.chk_sta_dtm), MAX(p.chk_end_dtm), MAX(p.chk_sta_dtm)) as raw_timestamp,
+  MAX(r.special_note) as memo,
+  COALESCE(MAX(r.send_flag), &#x27;N&#x27;) as raw_send_flag,
+  MAX(e.asset_nm) as equipment_name,
+  MAX(e.install_loc) as location,
+  1 as is_active,
+  COUNT(p.chk_serno) as total_count,
+  SUM(CASE WHEN r.chk_rslt IN (&#x27;S&#x27;, &#x27;F&#x27;, &#x27;N&#x27;) THEN 1 ELSE 0 END) as completed_count
+FROM tb_mob_std130 p
+LEFT JOIN tb_mob_rst130 r ON p.chk_action_no = r.chk_action_no 
+                         AND p.chk_plan_day = r.chk_plan_day 
+                         AND p.chk_ordinal = r.chk_ordinal 
+                         AND p.asset_id = r.asset_id 
+                         AND p.chk_fmt = r.chk_fmt 
+                         AND p.chk_item = r.chk_item
+LEFT JOIN tb_mob_std120 e ON p.asset_id = e.asset_id
+WHERE p.directnm_emp_no = ? AND p.uplo_proc_gbn = ? AND p.chk_plan_day &gt;= ? AND p.chk_plan_day &lt;= ?
+GROUP BY p.chk_action_no, p.chk_plan_day
+ORDER BY p.chk_plan_day DESC, p.chk_action_no ASC LIMIT 100;</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen: 화면 7. 설비 사양 화면 -->
+    <section id="screen-specs" class="screen-section">
+      <div class="screen-header">
+        <div class="screen-title-area">
+          <h2 class="screen-title">
+            <span>🏭</span>
+            <span>화면 7. 설비 사양 화면</span>
+          </h2>
+          <span class="screen-route-badge">📁 src/routes/specs/+page.svelte</span>
+          <p class="screen-desc">오프라인 동기화된 설비 마스터(tb_mob_std120)를 공정별로 필터링하고 검색어(설비명, 설비코드, 태그명, 설치위치)에 따라 페이징 조회하는 화면입니다.</p>
+        </div>
+        <span class="screen-count-badge">기능 1개</span>
+      </div>
+
+      <div class="features-list">
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-SPEC-01</span>
+            <span class="feature-title">공정별 설비 사양 목록 검색 및 페이징 조회</span>
+            <span class="sql-id-badge">SQL-SPEC-001</span>
+            <span class="feature-file">📁 src/lib/services/database.ts (getEquipmentSpecs, 1592행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>설비 목록 화면 진입, 검색어 입력 및 추가 스크롤 로딩 시 호출. 소속 공정 내에서 4대 필드(설비ID, 설비명, 설치위치, 태그ID) 부분 일치 검색 및 LIMIT/OFFSET 페이징 수행</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] fac_gbn, [2] uplo_proc_gbn, [3]~[6] keyword (%검색어%), [7] limit (30), [8] offset</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-spec-001')">SQL 복사</button>
+            <pre><code id="code-sql-spec-001">SELECT * FROM tb_mob_std120 WHERE fac_gbn = ? AND uplo_proc_gbn = ? AND (asset_id LIKE ? OR asset_nm LIKE ? OR install_loc LIKE ? OR tag_id LIKE ?) ORDER BY asset_id ASC LIMIT 30 OFFSET ?;</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen: 화면 8. 사용자 관리 및 비밀번호 변경 화면 -->
+    <section id="screen-users" class="screen-section">
+      <div class="screen-header">
+        <div class="screen-title-area">
+          <h2 class="screen-title">
+            <span>👥</span>
+            <span>화면 8. 사용자 관리 및 비밀번호 변경 화면</span>
+          </h2>
+          <span class="screen-route-badge">📁 src/routes/users/+page.svelte & /change-password/+page.svelte</span>
+          <p class="screen-desc">오프라인 단말기에 등록된 작업자 계정을 조회하고, 관리자가 비밀번호를 초기화하거나 개인이 직접 비밀번호를 변경하는 화면입니다.</p>
+        </div>
+        <span class="screen-count-badge">기능 4개</span>
+      </div>
+
+      <div class="features-list">
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-USER-01</span>
+            <span class="feature-title">오프라인 등록 사용자 계정 전체 목록 조회</span>
+            <span class="sql-id-badge">SQL-USER-001</span>
+            <span class="feature-file">📁 src/routes/users/+page.svelte (loadUsers, 56행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>사용자 관리 화면 진입 시 실행. 로컬 DB에 동기화된 모든 사용자 계정을 성명 가나다순으로 정렬 조회</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>없음</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-user-001')">SQL 복사</button>
+            <pre><code id="code-sql-user-001">SELECT * FROM tb_mob_set020 ORDER BY mob_user_nm ASC;</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-USER-02</span>
+            <span class="feature-title">사용자 비밀번호 사번으로 초기화 (관리자 권한)</span>
+            <span class="sql-id-badge">SQL-USER-002</span>
+            <span class="feature-file">📁 src/routes/users/+page.svelte (handleResetPassword, 81행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>관리자가 특정 사용자의 '비밀번호 초기화' 확인 팝업을 승인했을 때 실행. 해당 사번을 SHA-256 해시하여 비밀번호 컬럼 갱신</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] encryptedPw (사번 SHA-256 해시값), [2] mob_user_id (대상 사번)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-user-002')">SQL 복사</button>
+            <pre><code id="code-sql-user-002">UPDATE tb_mob_set020 SET mob_user_pw = ? WHERE mob_user_id = ?;</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-USER-03</span>
+            <span class="feature-title">개인 비밀번호 변경: 기존 비밀번호 일치 여부 확인</span>
+            <span class="sql-id-badge">SQL-USER-003</span>
+            <span class="feature-file">📁 src/routes/change-password/+page.svelte (handleChangePassword, 70행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>비밀번호 변경 화면에서 저장 터치 시 호출. 현재 비밀번호가 올바른지 로컬 DB 대조 검증</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] mob_user_id (사번), [2] currentEncryptedPw (현재 비밀번호 SHA-256)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-user-003')">SQL 복사</button>
+            <pre><code id="code-sql-user-003">SELECT * FROM tb_mob_set020 WHERE mob_user_id = ? AND mob_user_pw = ?;</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-USER-04</span>
+            <span class="feature-title">개인 비밀번호 변경: 신규 비밀번호 갱신 저장</span>
+            <span class="sql-id-badge">SQL-USER-004</span>
+            <span class="feature-file">📁 src/routes/change-password/+page.svelte (handleChangePassword, 83행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>기존 비밀번호 검증 성공 직후 호출. 신규 암호화된 비밀번호로 컬럼 업데이트</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] newEncryptedPw (신규 비밀번호 SHA-256), [2] mob_user_id (사번)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-user-004')">SQL 복사</button>
+            <pre><code id="code-sql-user-004">UPDATE tb_mob_set020 SET mob_user_pw = ? WHERE mob_user_id = ?;</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen: 화면 9. 데이터 동기화 백그라운드 프로세스 -->
+    <section id="screen-sync" class="screen-section">
+      <div class="screen-header">
+        <div class="screen-title-area">
+          <h2 class="screen-title">
+            <span>🔄</span>
+            <span>화면 9. 데이터 동기화 백그라운드 프로세스</span>
+          </h2>
+          <span class="screen-route-badge">📁 src/lib/stores/sync.ts & src/lib/services/database.ts</span>
+          <p class="screen-desc">서버(MES/ERP)와 통신하여 4대 마스터를 일괄 수신(Bulk Upsert)하고, 로컬 미전송 점검실적을 서버로 전송 완료(Y) 처리하며 1년 이상 경과 실적을 자동 정리하는 백그라운드 모듈입니다.</p>
+        </div>
+        <span class="screen-count-badge">기능 7개</span>
+      </div>
+
+      <div class="features-list">
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-SYNC-01</span>
+            <span class="feature-title">사용자 계정 일괄 갱신 (전체 삭제 후 Bulk Upsert)</span>
+            <span class="sql-id-badge">SQL-SYNC-001</span>
+            <span class="feature-file">📁 src/lib/services/database.ts (importSet020, 1101행, 1121행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>사용자 API 또는 엑셀 수신 시 트랜잭션 내에서 실행. 기존 사용자 테이블을 초기화하고 수신된 계정 목록을 고속 일괄 적재</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>DELETE (없음) / INSERT ([1]~[7] 계정 컬럼 매개변수)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-sync-001')">SQL 복사</button>
+            <pre><code id="code-sql-sync-001">DELETE FROM tb_mob_set020;
+INSERT OR REPLACE INTO tb_mob_set020 (fac_gbn, uplo_proc_gbn, mob_user_id, mob_user_nm, co_id, roles_json, mob_user_pw) VALUES (?, ?, ?, ?, ?, ?, ?);</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-SYNC-02</span>
+            <span class="feature-title">설비 사양 마스터 일괄 갱신 (전체 삭제 후 Bulk Upsert)</span>
+            <span class="sql-id-badge">SQL-SYNC-002</span>
+            <span class="feature-file">📁 src/lib/services/database.ts (importStd120, 1166행, 1170행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>설비사양 API 또는 엑셀 수신 시 실행. 기존 설비 데이터를 전체 삭제 후 신규 21개 속성 마스터를 고속 일괄 적재</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>DELETE (없음) / INSERT ([1]~[21] 설비 컬럼 매개변수)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-sync-002')">SQL 복사</button>
+            <pre><code id="code-sql-sync-002">DELETE FROM tb_mob_std120;
+INSERT OR REPLACE INTO tb_mob_std120 (fac_gbn, uplo_proc_gbn, uplo_proc_gbn_nm, asset_id, asset_nm, proc_cd, proc_nm, parent_asset_id, parent_asset_nm, install_loc, strct_fmt, asset_imp_dgr, dtl_spec, spec, vol, asset_tp, tag_id, asset_csf_cd, large_csf_cd, midd_csf_cd, sml_csf_cd) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-SYNC-03</span>
+            <span class="feature-title">점검 계획 마스터 일괄 갱신 (지정 액션번호 삭제 후 Bulk Upsert)</span>
+            <span class="sql-id-badge">SQL-SYNC-003</span>
+            <span class="feature-file">📁 src/lib/services/database.ts (importStd130, 1261행, 1325행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>점검계획 API 또는 엑셀 수신 시 실행. 해당 액션번호의 기존 계획을 삭제하고 신규 5대 복합키 체크리스트를 고속 일괄 적재</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>DELETE ([1] chk_action_no, [2] chk_ordinal) / INSERT ([1]~[39] 계획 컬럼)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-sync-003')">SQL 복사</button>
+            <pre><code id="code-sql-sync-003">DELETE FROM tb_mob_std130 WHERE chk_action_no = ? AND chk_ordinal = ?;
+INSERT OR REPLACE INTO tb_mob_std130 (chk_gbn, chk_gbn_nm, cycle_gbn, cycle_gbn_nm, chk_action_no, chk_plan_day, chk_ordinal, chk_serno, asset_id, chk_fmt, chk_fmt_nm, chk_item, chk_item_nm, chk_dtl, chk_unit, chk_unit_nm, chk_ll, chk_ref, chk_ul, directnm_emp_no, directnm_emp_nm, chk_rslt, chk_rslt_nm, chk_work_gbn, chk_sta_dtm, chk_end_dtm, mea_val, special_note, fac_gbn, uplo_proc_gbn, chk_action_nm, asset_nm, chk_item_unit, cycle_sta_mnt, cycle_week, cycle_wkday, abnr_val_yn, impt_asset_yn, reltd_tag_nm) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-SYNC-04</span>
+            <span class="feature-title">공통 기준코드 마스터 일괄 갱신 (전체 삭제 후 Bulk Upsert)</span>
+            <span class="sql-id-badge">SQL-SYNC-004</span>
+            <span class="feature-file">📁 src/lib/services/database.ts (importStd110, 1462행, 1466행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>기준코드 API 또는 엑셀 수신 시 실행. 기존 기준코드를 삭제하고 다국어 기준코드 전체를 고속 일괄 적재</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>DELETE (없음) / INSERT ([1]~[8] 기준코드 컬럼)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-sync-004')">SQL 복사</button>
+            <pre><code id="code-sql-sync-004">DELETE FROM tb_mob_std110;
+INSERT OR REPLACE INTO tb_mob_std110 (master_cd, master_nm, lang, cd_val, cd_nm, cd_desc, display_seq, use_yn) VALUES (?, ?, ?, ?, ?, ?, ?, ?);</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-SYNC-05</span>
+            <span class="feature-title">서버 전송 성공 실적의 상태 플래그(send_flag='Y') 업데이트</span>
+            <span class="sql-id-badge">SQL-SYNC-005</span>
+            <span class="feature-file">📁 src/lib/stores/sync.ts (transmitResults, 836행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>서버 점검실적 API로부터 성공 응답을 수신했을 때 실행. 5대 복합키에 해당하는 실적의 send_flag를 'Y'로 확정 갱신</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] chk_action_no, [2] chk_ordinal, [3] asset_id, [4] chk_fmt, [5] chk_item</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-sync-005')">SQL 복사</button>
+            <pre><code id="code-sql-sync-005">UPDATE tb_mob_rst130 SET send_flag = &#x27;Y&#x27; WHERE chk_action_no = ? AND chk_ordinal = ? AND asset_id = ? AND chk_fmt = ? AND chk_item = ?;</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-SYNC-06</span>
+            <span class="feature-title">마스터 동기화 성공 일자 갱신 (tb_mob_set010)</span>
+            <span class="sql-id-badge">SQL-SYNC-006</span>
+            <span class="feature-file">📁 src/lib/services/database.ts (updateSyncDate, 836행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>각 마스터 동기화 완료 시 실행. sync_date_user, sync_date_equip, sync_date_plan, sync_date_std 컬럼에 오늘 날짜(YYYYMMDD) 기록</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[1] dateStr (YYYYMMDD)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-sync-006')">SQL 복사</button>
+            <pre><code id="code-sql-sync-006">UPDATE tb_mob_set010 SET ${columnName} = ?;</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-SYNC-07</span>
+            <span class="feature-title">1년 이상 경과한 전송완료(send_flag='Y') 실적 데이터 안전 삭제(Purge)</span>
+            <span class="sql-id-badge">SQL-SYNC-007</span>
+            <span class="feature-file">📁 src/lib/services/database.ts (purgeOldRecords, 1881행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>동기화 완료 후 백그라운드에서 실행. 단말기 용량 관리를 위해 이미 전송 완료된 1년 이상 경과 실적 데이터만 안전 정리</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>없음 (SQLite strftime 함수 기반)</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-sync-007')">SQL 복사</button>
+            <pre><code id="code-sql-sync-007">DELETE FROM tb_mob_rst130 WHERE chk_plan_day &lt; strftime(&#x27;%Y%m%d&#x27;, &#x27;now&#x27;, &#x27;-1 year&#x27;, &#x27;localtime&#x27;) AND send_flag = &#x27;Y&#x27;;</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen: 화면 10. 개발자 DB 관리 화면 -->
+    <section id="screen-devdb" class="screen-section">
+      <div class="screen-header">
+        <div class="screen-title-area">
+          <h2 class="screen-title">
+            <span>🛠️</span>
+            <span>화면 10. 개발자 DB 관리 화면</span>
+          </h2>
+          <span class="screen-route-badge">📁 src/routes/dev-db/+page.svelte</span>
+          <p class="screen-desc">개발자 전용 권한(dev)으로 진입하여 SQLite 시스템 물리 테이블 목록, PRAGMA 스키마 컬럼 정의, 테이블별 실제 적재 레코드를 직접 탐색하고 임의 SQL을 테스트하는 화면입니다.</p>
+        </div>
+        <span class="screen-count-badge">기능 5개</span>
+      </div>
+
+      <div class="features-list">
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-DEV-01</span>
+            <span class="feature-title">SQLite 활성 물리 테이블 목록 동적 조회</span>
+            <span class="sql-id-badge">SQL-DEV-001</span>
+            <span class="feature-file">📁 src/routes/dev-db/+page.svelte (loadTables, 126행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>개발자 DB 화면 진입 시 실행. sqlite_master 시스템 테이블에서 내부 SQLite/Jeep 가상 테이블을 제외한 순수 업무용 물리 테이블 목록 로딩</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>없음</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-dev-001')">SQL 복사</button>
+            <pre><code id="code-sql-dev-001">SELECT name FROM sqlite_master WHERE type=&#x27;table&#x27; AND name NOT LIKE &#x27;sqlite_%&#x27; AND name NOT LIKE &#x27;jeep_%&#x27; ORDER BY name ASC;</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-DEV-02</span>
+            <span class="feature-title">테이블 물리 컬럼 정보 및 PK 구조 동적 검사</span>
+            <span class="sql-id-badge">SQL-DEV-002</span>
+            <span class="feature-file">📁 src/routes/dev-db/+page.svelte (loadTableColumns, 158행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>테이블 선택 시 실행. 컬럼명, 데이터타입, NOT NULL 여부, Primary Key 순번을 PRAGMA 명령으로 조회</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[동적 치환] tableName</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-dev-002')">SQL 복사</button>
+            <pre><code id="code-sql-dev-002">PRAGMA table_info(${tableName});</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-DEV-03</span>
+            <span class="feature-title">선택 테이블 총 레코드 건수 집계</span>
+            <span class="sql-id-badge">SQL-DEV-003</span>
+            <span class="feature-file">📁 src/routes/dev-db/+page.svelte (loadTableData, 179행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>테이블 선택 시 실행. 현재 테이블에 적재된 총 행 수 카운트</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[동적 치환] tableName</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-dev-003')">SQL 복사</button>
+            <pre><code id="code-sql-dev-003">SELECT COUNT(*) as cnt FROM ${tableName};</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-DEV-04</span>
+            <span class="feature-title">선택 테이블 레코드 실데이터 브라우징 (최대 250건)</span>
+            <span class="sql-id-badge">SQL-DEV-004</span>
+            <span class="feature-file">📁 src/routes/dev-db/+page.svelte (loadTableData, 185행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>테이블 데이터 탭 클릭 시 실행. 해당 물리 테이블의 실제 적재 데이터를 페이징 형태로 조회하여 테이블 뷰어에 렌더링</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[동적 치환] tableName</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-dev-004')">SQL 복사</button>
+            <pre><code id="code-sql-dev-004">SELECT * FROM ${tableName} LIMIT 250;</code></pre>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-top-row">
+            <span class="feature-badge">FEAT-DEV-05</span>
+            <span class="feature-title">테이블 전체 레코드 비우기 (개발자 테스트)</span>
+            <span class="sql-id-badge">SQL-DEV-005</span>
+            <span class="feature-file">📁 src/routes/dev-db/+page.svelte (clearTableData, 259행)</span>
+          </div>
+
+          <div class="feature-meta-grid">
+            <div class="meta-item">
+              <strong>실행 시점 및 비즈니스 목적</strong>
+              <span>개발자가 '테이블 비우기' 확인 모달을 승인했을 때 실행</span>
+            </div>
+            <div class="meta-item">
+              <strong>바인딩 매개변수 (Parameters)</strong>
+              <span>[동적 치환] tableName</span>
+            </div>
+          </div>
+
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode('code-sql-dev-005')">SQL 복사</button>
+            <pre><code id="code-sql-dev-005">DELETE FROM ${tableName};</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>POAR Inspection Screen-Centric SQL Specification &copy; 2026 Maintenance Engineering Team</p>
+      <a href="#" style="color: var(--primary); text-decoration: none; font-weight: 600; display: inline-block; margin-top: 10px;">⬆️ 맨 위로 이동</a>
+    </footer>
+  </div>
+</body>
+</html>

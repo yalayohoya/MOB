@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>프로젝트 개발 규칙 및 설계 표준 | P-ARG MOB (POAR Inspection)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-code: #0f172a;
+
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      --primary-subtle: #f0f9ff;
+
+      --accent: #2563eb;
+      --accent-light: #dbeafe;
+
+      --emerald: #059669;
+      --emerald-light: #d1fae5;
+      --amber: #d97706;
+      --amber-light: #fef3c7;
+      --rose: #e11d48;
+      --rose-light: #ffe4e6;
+      --purple: #7c3aed;
+      --purple-light: #ede9fe;
+
+      --border: #e2e8f0;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 80px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 24px 80px 24px;
+    }
+
+    /* Global Header Nav */
+    .top-portal-nav {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .top-portal-nav-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .portal-logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.12rem;
+      color: var(--primary-dark);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .portal-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .portal-link {
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      text-decoration: none;
+      padding: 5px 11px;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .portal-link:hover,
+    .portal-link.active {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+    }
+
+    /* Hero Banner */
+    .doc-hero {
+      background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      margin: 28px 0 32px 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .doc-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .badge-blue {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border: 1px solid rgba(2, 132, 199, 0.2);
+    }
+
+    .badge-green {
+      background: var(--emerald-light);
+      color: var(--emerald);
+      border: 1px solid rgba(5, 150, 105, 0.2);
+    }
+
+    .badge-amber {
+      background: var(--amber-light);
+      color: var(--amber);
+      border: 1px solid rgba(217, 119, 6, 0.2);
+    }
+
+    .badge-purple {
+      background: var(--purple-light);
+      color: var(--purple);
+      border: 1px solid rgba(124, 58, 237, 0.2);
+    }
+
+    .doc-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    .doc-desc {
+      color: var(--text-sub);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* Quick TOC Bar */
+    .toc-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .toc-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+
+    .toc-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .toc-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .toc-chip:hover {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border-color: var(--primary);
+    }
+
+    /* Content Cards & Sections */
+    .content-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    h2.section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--text-main);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--bg-subtle);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h3.sub-title {
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 24px 0 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Code Blocks */
+    .code-container {
+      position: relative;
+      background: var(--bg-code);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin: 14px 0 20px 0;
+      overflow-x: auto;
+    }
+
+    .code-container pre {
+      margin: 0;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: #f8fafc;
+      line-height: 1.55;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Alerts */
+    .alert-box {
+      padding: 16px 18px;
+      border-radius: var(--radius-md);
+      margin: 16px 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .alert-info {
+      background: #f0f9ff;
+      border-left: 4px solid var(--primary);
+      color: #0369a1;
+    }
+
+    .alert-warning {
+      background: #fffbeb;
+      border-left: 4px solid var(--amber);
+      color: #92400e;
+    }
+
+    .alert-success {
+      background: #ecfdf5;
+      border-left: 4px solid var(--emerald);
+      color: #065f46;
+    }
+
+    .alert-danger {
+      background: #fff1f2;
+      border-left: 4px solid var(--rose);
+      color: #9f1239;
+    }
+
+    /* Tables */
+    .doc-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 16px 0;
+    }
+
+    .doc-table th {
+      background: #f8fafc;
+      padding: 11px 14px;
+      border-bottom: 2px solid var(--border);
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: left;
+    }
+
+    .doc-table td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-main);
+    }
+
+    /* Lists */
+    ul.styled-list,
+    ol.styled-list {
+      padding-left: 22px;
+      margin: 12px 0 16px 0;
+    }
+
+    ul.styled-list li,
+    ol.styled-list li {
+      margin-bottom: 8px;
+      color: var(--text-sub);
+    }
+
+    ul.styled-list li strong,
+    ol.styled-list li strong {
+      color: var(--text-main);
+    }
+
+    code.inline-code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.83rem;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .diff-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+      vertical-align: middle;
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    footer {
+      text-align: center;
+      padding-top: 36px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 60px;
+    }
+  </style>
+  <script>
+    function copyCode(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('코드가 클립보드에 복사되었습니다.');
+      }).catch(err => {
+        console.error('복사 실패:', err);
+      });
+    }
+  </script>
+</head>
+
+<body>
+  <nav class="top-portal-nav">
+    <div class="top-portal-nav-inner">
+      <a href="../문서_허브.html" class="portal-logo">
+        <span>📑</span> Guide Docs
+      </a>
+      <div class="portal-links">
+        <a href="../문서_허브.html" class="portal-link">통합 허브</a>
+        <a href="DB명세서.html" class="portal-link">DB명세서</a>
+        <a href="SQL_정의서.html" class="portal-link">SQL정의서</a>
+        <a href="앱_배포_가이드.html" class="portal-link">앱 배포 가이드</a>
+        <a href="프로젝트_규칙.html" class="portal-link active">프로젝트 규칙</a>
+        <a href="기술_가이드.html" class="portal-link">기술 가이드</a>
+        <a href="화면_개발_가이드.html" class="portal-link">화면 개발 가이드</a>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+
+    <header class="doc-hero">
+      <span class="doc-badge badge-green">100% 소스코드 검증 완료</span>
+      <h1 class="doc-title">📋 프로젝트 개발 규칙 및 설계 표준</h1>
+      <p class="doc-desc">
+        포스코 아르헨티나 리튬 플랜트 모바일 점검 시스템(P-ARG MOB) 개발 시 준수해야 하는 다국어(i18n), 오프라인 우선(Offline-First), TypeScript, 보안 및 모바일
+        인터페이스 표준입니다.
+      </p>
+    </header>
+
+    <div class="toc-bar">
+      <div class="toc-title">목차 바로가기</div>
+      <div class="toc-chips">
+        <a href="#rule-1" class="toc-chip">1. 코드 스타일 & TypeScript</a>
+        <a href="#rule-2" class="toc-chip">2. 다국어(i18n) & UI/UX 디자인</a>
+        <a href="#rule-3" class="toc-chip">3. 오프라인 우선 & SQLite 무결성</a>
+        <a href="#rule-4" class="toc-chip">4. 보안, 캡처방지 & 세션 관리</a>
+        <a href="#rule-5" class="toc-chip">5. UI 알림 및 모달 표준</a>
+        <a href="#rule-6" class="toc-chip">6. 라이브러리 및 네이티브 플러그인</a>
+        <a href="#rule-7" class="toc-chip">7. 문서화 및 사실 검증 원칙</a>
+      </div>
+    </div>
+
+    <!-- Rule 1 -->
+    <section id="rule-1" class="content-card">
+      <h2 class="section-title">1. 코드 스타일 및 TypeScript 아키텍처 규칙</h2>
+      <ul class="styled-list">
+        <li><strong>들여쓰기:</strong> 스페이스 2칸(indentation: 2 spaces)을 엄수합니다.</li>
+        <li><strong>TypeScript 필수:</strong> 모든 서비스 로직은 <code class="inline-code">.ts</code> 파일로 작성하고, Svelte 컴포넌트 또한
+          <code class="inline-code">&lt;script lang="ts"&gt;</code>를 사용하여 <code class="inline-code">any</code> 사용을
+          최소화합니다.
+        </li>
+        <li><strong>명명 규칙:</strong>
+          <ul style="margin-top: 4px;">
+            <li>변수/함수: <code class="inline-code">camelCase</code> (예: <code
+                class="inline-code">getInspectionTasksByDate</code>)</li>
+            <li>상수: <code class="inline-code">UPPER_SNAKE_CASE</code> (예: <code class="inline-code">APP_CONFIG</code>,
+              <code class="inline-code">DEV_IDS</code>)
+            </li>
+            <li>컴포넌트/인터페이스/타입: <code class="inline-code">PascalCase</code> (예: <code
+                class="inline-code">ConfirmModal.svelte</code>, <code class="inline-code">UserSession</code>)</li>
+          </ul>
+        </li>
+        <li><strong>JSDoc 및 한국어 주석:</strong> 함수, 인터페이스, 서비스 메서드에는 기능과 파라미터, 반환값을 명시하는 JSDoc 주석을 작성하며, 비즈니스 로직 설명 주석은 명확한
+          <strong>한국어</strong>로 기술합니다.
+        </li>
+        <li><strong>빌드 진단 무결성:</strong> 작업 완료 시 반드시 <code class="inline-code">npm run check</code>를 실행하여 <strong>0
+            errors and 0 warnings</strong> 상태를 유지해야 합니다.</li>
+      </ul>
+    </section>
+
+    <!-- Rule 2 -->
+    <section id="rule-2" class="content-card">
+      <h2 class="section-title">2. 다국어(i18n) 및 UI/UX 디자인 규칙</h2>
+      <div class="alert-box alert-warning">
+        ⚠️ <strong>하드코딩 금지 정책:</strong><br>
+        본 앱은 <strong>포스코 아르헨티나 현장</strong>에서 사용되므로 화면의 텍스트, 버튼명, 안내 메시지를 단일 언어로 하드코딩해서는 안 됩니다.
+      </div>
+      <ul class="styled-list">
+        <li><strong>다국어(i18n) 필수 지원:</strong> 신규 UI 요소나 문구를 추가할 때는 반드시 <code
+            class="inline-code">src/lib/stores/lang.ts</code>의 언어 사전 객체(<code class="inline-code">t.ko</code>, <code
+            class="inline-code">t.es</code>)에 한국어와 스페인어를 동시에 등록하고, 화면에서는 <code class="inline-code">{$t.yourKey}</code>
+          형태로 바인딩해야 합니다.</li>
+        <li><strong>라이트 모드 기본 & 다크 모드 전환:</strong> 현장 주간 가독성을 위해 기본은 <strong>라이트 모드</strong>이며, <code
+            class="inline-code">src/lib/stores/ui.ts</code> 및 <code class="inline-code">SystemBarThemePlugin</code>과
+          연동하여 상단 상태바 + 하단 네비바까지 시스템 테마가 완벽히 실시간 전환되어야 합니다.</li>
+        <li><strong>Tailwind CSS v4 스타일링:</strong> 최신 <code class="inline-code">@tailwindcss/vite</code> 엔진을 기반으로 유틸리티
+          클래스를 적용하며, 반복되는 카드나 버튼 스타일은 의미 있는 컴포넌트로 모듈화합니다.</li>
+        <li><strong>터치 디바이스(현장 PDA/태블릿) 최우선:</strong> 마우스 Hover 효과에 의존하지 않으며, 작업자가 장갑을 착용한 상태에서도 터치할 수 있도록 <strong>최소 터치
+            타깃 44px 이상</strong> 확보 및 클릭 시 확실한 Active 피드백(축소 애니메이션 등)을 부여합니다.</li>
+      </ul>
+    </section>
+
+    <!-- Rule 3 -->
+    <section id="rule-3" class="content-card">
+      <h2 class="section-title">3. 오프라인 우선(Offline-First) 및 로컬 SQLite 무결성 규칙</h2>
+      <ul class="styled-list">
+        <li><strong>오프라인 동작 100% 보장:</strong> 네트워크 연결이 완전히 끊긴 환경에서도 설비 QR 스캔, 체크리스트 작성, 실적 저장(<code
+            class="inline-code">tb_mob_rst130</code>) 등 모든 일상 점검 업무가 지연 없이 로컬 SQLite에서 즉시 수행되어야 합니다.</li>
+        <li><strong>데이터 무결성 최우선 (자동 삭제 금지):</strong> 통신 에러나 일시적 예외 발생 시 로컬 DB 파일이나 사용자 설정 테이블을 임의로 삭제(<code
+            class="inline-code">DROP TABLE</code> 또는 파일 삭제)하지 않고, UI 에러 패널을 통해 안전하게 예외를 처리해야 합니다.</li>
+        <li><strong>하이브리드 동기화 파이프라인:</strong> 네트워크 연결 복구 시 사용자가 <code class="inline-code">[데이터 수신]</code> 또는 <code
+            class="inline-code">[실적 송신]</code>을 트리거했을 때만 4개 마스터 테이블 벌크 UPSERT 및 <code
+            class="inline-code">send_flag = 'N'</code> 건에 대한 순차 송신을 안전하게 수행합니다.</li>
+      </ul>
+    </section>
+
+    <!-- Rule 4 -->
+    <section id="rule-4" class="content-card">
+      <h2 class="section-title">4. 보안, 화면 캡처 방지 및 세션 수명주기 관리 규칙</h2>
+      <ul class="styled-list">
+        <li><strong>비밀번호 SHA-256 해시화:</strong> 사용자 비밀번호는 평문으로 저장하거나 전송하지 않으며, 클라이언트에서 SHA-256 단방향 해시 암호화 후 로컬 DB(<code
+            class="inline-code">tb_mob_set020</code>) 보관 및 서버 전송을 수행합니다.</li>
+        <li><strong>화면 캡처 방지 (PrivacyScreen):</strong> 설비 정보 및 점검 데이터 유출 방지를 위해 일반 사용자 계정 접속 시 안드로이드 시스템 화면 캡처 및 화면 녹화를
+          원천 차단합니다. (개발자 계정 로그인 시에만 디버깅용으로 캡처 방지 해제)</li>
+        <li><strong>8시간 무활동 감지 자동 로그아웃 (Idle Timer):</strong> 현장 1개 근무조(Shift) 기준인 8시간(28,800초, <code
+            class="inline-code">src/lib/stores/activity.ts</code>의 <code class="inline-code">IDLE_LIMIT = 28800</code>)
+          동안 터치, 마우스, 키보드, 스크롤 입력이 감지되지 않으면 자동으로 세션을 만료시키고 로그인 화면으로 리다이렉트합니다.</li>
+        <li><strong>종료 시 안전 정리:</strong> 하드웨어 뒤로가기 버튼 2회 터치로 앱 종료 시 또는 세션 만료 시, 인메모리 인증 정보와 SQLite 커넥션을 안전하게 해제(<code
+            class="inline-code">clearSessionSilent</code>, <code class="inline-code">closeDatabase</code>)하여 잔류 메모리 오염을
+          방지합니다.</li>
+      </ul>
+    </section>
+
+    <!-- Rule 5 -->
+    <section id="rule-5" class="content-card">
+      <h2 class="section-title">5. 모바일 UI 알림 및 모달 표준 (ConfirmModal & Toast)</h2>
+      <div class="alert-box alert-info">
+        💡 <strong>표준 컴포넌트 안내:</strong><br>
+        모바일 웹뷰 프리징을 유발하는 브라우저 기본 <code class="inline-code">alert()</code>, <code class="inline-code">confirm()</code>
+        사용은 전면 금지하며, 번들 용량 절감을 위해 외부 무거운 라이브러리(<code class="inline-code">sweetalert2</code> 등) 대신 프로젝트 전용 컴포넌트 및 네이티브
+        토스트를 사용합니다.
+      </div>
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th>구분</th>
+            <th>사용 대상 및 표준 구현체</th>
+            <th>적용 사례</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>전역 컨펌 / 알림 모달</strong></td>
+            <td><code class="inline-code">src/lib/components/ConfirmModal.svelte</code></td>
+            <td>동기화 확인/성공/실패, 점검 결과 저장 확인, 저장소 권한 설정 유도 팝업</td>
+          </tr>
+          <tr>
+            <td><strong>가벼운 스낵바 토스트</strong></td>
+            <td><code class="inline-code">@capacitor/toast</code> (<code class="inline-code">Toast.show</code>)</td>
+            <td>뒤로가기 버튼 2회 종료 안내 ("한 번 더 누르면 종료됩니다"), 복사 완료 안내</td>
+          </tr>
+          <tr>
+            <td><strong>네이티브 시스템 다이얼로그</strong></td>
+            <td><code class="inline-code">@capacitor/dialog</code> (<code class="inline-code">Dialog.alert</code>)</td>
+            <td>웹뷰 렌더링 이전 네이티브 초기화 단계에서의 긴급 안내</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Rule 6 -->
+    <section id="rule-6" class="content-card">
+      <h2 class="section-title">6. 라이브러리 및 네이티브 플러그인 관리 원칙</h2>
+      <ul class="styled-list">
+        <li><strong>SQLite 엔진 버전 고정 엄수:</strong> 브라우저 및 안드로이드 웹뷰 환경에서 바이너리 SQLite를 구동하는 <code
+            class="inline-code">jeep-sqlite (2.8.0)</code> 및 <code class="inline-code">sql.js (1.11.0)</code>는 종속성 충돌
+          방지를 위해 <strong>절대 임의로 버전 업그레이드하지 않습니다.</strong></li>
+        <li><strong>자체 네이티브 플러그인 2종 유지보수:</strong>
+          <ul style="margin-top: 4px;">
+            <li><code class="inline-code">ManageStoragePlugin.java</code>: Android 11+ Scoped Storage 대응용 엑셀 전체 파일 접근 권한
+              요청 전용.</li>
+            <li><code class="inline-code">SystemBarThemePlugin.java</code>: 상단 상태바 + 하단 네비게이션바 실시간 테마 색상 동기화 전용.</li>
+          </ul>
+        </li>
+        <li><strong>하드웨어 가속 및 권한:</strong> ML Kit 바코드 인식 하드웨어 가속 메타데이터(<code class="inline-code">barcode</code>) 및 카메라
+          권한, 화면 켜짐 유지(<code class="inline-code">KeepAwake</code>) 설정을 준수합니다.</li>
+      </ul>
+    </section>
+
+    <!-- Rule 7 -->
+    <section id="rule-7" class="content-card">
+      <h2 class="section-title">7. 문서화 및 100% 소스코드 사실 검증 원칙</h2>
+      <ul class="styled-list">
+        <li><strong>허위 문서 작성 절대 금지:</strong> 존재하지 않는 가상의 쿼리, 미구현된 UI(대시보드 원형 프로그레스 등), 임의의 파일 경로를 문서에 기재하지 않습니다.</li>
+        <li><strong>문서 단일화 및 실시간 동기화:</strong> 모든 아키텍처와 규칙 문서는 <code class="inline-code">docs/문서_허브.html</code> 및 <code
+            class="inline-code">docs/page/</code> 산하의 통합 포털 체계로 최신 소스코드와 일치하도록 유지합니다.</li>
+        <li><strong>검증 파이프라인:</strong> 문서 작성 후에는 브라우저 렌더링 확인 및 <code class="inline-code">npm run check</code> 진단을 통해
+          프로젝트의 실제 동작과의 정합성을 최종 검증합니다.</li>
+      </ul>
+    </section>
+
+    <!-- Rule 8 -->
+    <section id="rule-8" class="content-card">
+      <h2 class="section-title">8. 버전 관리 및 시맨틱 버저닝(SemVer 2.0.0) 표준</h2>
+      <div class="alert-box alert-info">
+        💡 <strong>단일 진실 공급원 (Single Source of Truth):</strong><br>
+        앱의 버전은 오직 최상단 <code class="inline-code">package.json</code>의 <code class="inline-code">"version"</code> 필드에서만
+        관리합니다. (<code class="inline-code">.env</code> 파일 완전 불필요)<br>
+        • <strong>웹/스벨트</strong>: <code class="inline-code">src/lib/constants.ts</code>가 <code
+          class="inline-code">package.json</code>을 직접 참조하여 스플래시, 다운로드 모달, 설정 화면에 자동 전파합니다.<br>
+        • <strong>안드로이드 네이티브</strong>: <code class="inline-code">android/app/build.gradle</code>이 <code
+          class="inline-code">package.json</code>을 실시간 파싱하여 <code class="inline-code">versionName</code>, <code
+          class="inline-code">versionCode</code> 및 산출물 APK 파일명에 자동 주입합니다.
+      </div>
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th>구분</th>
+            <th>증가 규칙</th>
+            <th>적용 기준 및 구체적 예시</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>MAJOR (주 버전)<br><code class="inline-code">X.0.0</code></strong></td>
+            <td><span class="diff-badge" style="background:#fee2e2; color:#991b1b; border-color:#fecaca;">파괴적
+                변경</span><br><small style="color:var(--text-muted);">(하위 호환 불가)</small></td>
+            <td>• SQLite 로컬 물리 테이블 스키마의 비호환적 대규모 개편<br>• ERP/MES 서버 통신 API 규격 및 URL 체계 전면 교체<br>• 앱 인증/세션 아키텍처의 근본적 개편
+            </td>
+          </tr>
+          <tr>
+            <td><strong>MINOR (부 버전)<br><code class="inline-code">1.X.0</code></strong></td>
+            <td><span class="diff-badge" style="background:#dbeafe; color:#1e40af; border-color:#bfdbfe;">신규 기능
+                추가</span><br><small style="color:var(--text-muted);">(하위 호환 유지)</small></td>
+            <td>• 새로운 점검 메뉴 및 대시보드 통계 화면 추가<br>• 신규 언어 다국어(i18n) 지원 확대 (예: 포르투갈어 추가)<br>• 신규 엑셀 마스터 서식 파싱 및 출력 지원</td>
+          </tr>
+          <tr>
+            <td><strong>PATCH (수 버전)<br><code class="inline-code">1.2.X</code></strong></td>
+            <td><span class="diff-badge" style="background:#dcfce7; color:#166534; border-color:#bbf7d0;">패치 /
+                최적화</span><br><small style="color:var(--text-muted);">(동작 규격 불변)</small></td>
+            <td>• UI 오탈자 수정, 버튼 여백 및 컬러 미세 조정<br>• 특정 단말기에서의 카메라 바코드 포커싱 예외 보강<br>• 경미한 버그 픽스 및 성능 최적화</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="alert-box alert-warning" style="margin-top: 14px;">
+        ⚠️ <strong>안드로이드 versionCode 자동 계산 공식:</strong><br>
+        <code class="inline-code">MAJOR * 10000 + MINOR * 100 + PATCH</code> (예: <code class="inline-code">1.2.7</code>
+        ➔ <code class="inline-code">10207</code>)<br>
+        안드로이드 OS는 이전 설치본보다 <code class="inline-code">versionCode</code>가 반드시 커야만 업데이트 덮어쓰기를 허용하므로, 신규 릴리스 시 <code
+          class="inline-code">package.json</code>의 버전을 필히 상향해야 합니다.
+      </div>
+    </section>
+
+    <footer>
+      <p>SecureScan Ops Documentation Portal &copy; 2026 Maintenance Engineering Team</p>
+      <a href="#"
+        style="color: var(--primary); text-decoration: none; font-weight: 600; display: inline-block; margin-top: 10px;">⬆️
+        맨 위로 이동</a>
+    </footer>
+  </div>
+</body>
+
+</html>
