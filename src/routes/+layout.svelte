@@ -25,7 +25,7 @@
   import { checkStoragePermissionGranted, openStoragePermissionSettings } from "$lib/services/excel";
   import { startIdleTimer, stopIdleTimer, resetIdleTimer } from "$lib/stores/activity";
   import { checkForUpdate, isDownloadingApk, downloadProgress, downloadingFileName } from "$lib/services/update";
-import AppSplashScreen from "$lib/components/AppSplashScreen.svelte";
+  import AppSplashScreen from "$lib/components/AppSplashScreen.svelte";
   import DownloadProgressOverlay from "$lib/components/DownloadProgressOverlay.svelte";
   import { KeepAwake } from "@capacitor-community/keep-awake";
   import { updatePrivacyScreen } from "$lib/services/privacyScreenService";

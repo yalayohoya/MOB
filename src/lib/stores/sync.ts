@@ -715,21 +715,44 @@ function createSyncStore() {
       } else {
         // 3-B. 미전송 실적 보고 건수가 0일 경우
         isTransmitting.set(false);
-        const confirmRes = await showSyncConfirm(
+       
+        let confirmRes = await showSyncConfirm(
           t[currentLang].syncNoUnreportedConfirmTitle,
           online
             ? t[currentLang].syncNoUnreportedConfirmMsgOnline
             : t[currentLang].syncNoUnreportedConfirmMsgOffline
         );
+        
+         if (!confirmRes.confirmed) {
+          isTransmitting.set(false);
+          return;
+        }
+          
+         confirmRes = await showSyncConfirm(
+          t[currentLang].syncConfirmTitle,
+          t[currentLang].syncConfirmMessage,
+          'none',
+          true
+        );
+
         isTransmitting.set(true);
 
         if (confirmRes.confirmed) {
           const todayStr = toLocalDateString().replace(/-/g, '');
+          /*
           records = await dbService.getTransmitRecords({
             empId,
             facGbn,
             uploProcGbn,
             minPlanDay: todayStr
+          });
+          */
+          records = await dbService.getTransmitRecords({
+            empId,
+            facGbn,
+            uploProcGbn,                   
+            startDay: confirmRes.fromDt,
+            endDay: confirmRes.toDt
           });
         } else {
           isTransmitting.set(false);

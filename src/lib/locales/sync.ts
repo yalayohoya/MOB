@@ -46,12 +46,12 @@ export const dict = {
   },
   syncNoUnreportedConfirmTitle: { ko: "실적 전송 확인", es: "Confirmar Envío" },
   syncNoUnreportedConfirmMsgOnline: {
-    ko: "전송할 미보고 실적이 없습니다.\n금일 점검 완료된 실적을 재송신하시겠습니까?",
-    es: "No hay registros de inspección pendientes de envío.\n¿Desea retransmitir los registros completados hoy?"
+    ko: "전송할 미보고 실적이 없습니다.\n점검 완료된 실적을 재송신하시겠습니까?",
+    es: "No hay registros de inspección pendientes de envío.\¿Desea retransmitir los registros completados?"
   },
   syncNoUnreportedConfirmMsgOffline: {
-    ko: "전송할 미보고 실적이 없습니다.\n금일 점검 완료된 실적을 내보내기하시겠습니까?",
-    es: "No hay registros de inspección pendientes de envío.\n¿Desea exportar los registros completados hoy?"
+    ko: "전송할 미보고 실적이 없습니다.\n점검 완료된 실적을 내보내기하시겠습니까?",
+    es: "No hay registros de inspección pendientes de envío.\n¿Desea exportar los registros completados?"
   },
   syncOnlineCompleteMsg: {
     ko: "실시간 온라인 동기화가 완전히 성공했습니다:\n\n• 설비 사양 정보: {eqCount} 건\n• 설비 점검 계획: {planCount} 건\n• 점검 표준 정보: {stdsCount} 건",

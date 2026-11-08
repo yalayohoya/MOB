@@ -1,6 +1,6 @@
 {
   "name": "com.posco.arg_mob01",
-  "version": "1.2.7",
+  "version": "1.2.9",
   "type": "module",
   "scripts": {
     "dev": "npm run copy:wasm && vite dev",
@@ -55,6 +55,7 @@
     "@capacitor/toast": "^8.0.0",
     "@capawesome-team/capacitor-file-opener": "^8.0.1",
     "@capgo/capacitor-network-diagnostics": "^8.0.8",
+    "debug": "^4.4.3",
     "jeep-sqlite": "2.8.0",
     "sql.js": "1.11.0",
     "xlsx": "^0.18.5"

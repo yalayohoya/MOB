@@ -1850,10 +1850,12 @@ class DatabaseService {
     uploProcGbn: string;
     onlyUnsent?: boolean;
     minPlanDay?: string;
+    startDay?: string;
+    endDay?: string;
   }): Promise<any[]> {
     if (!this.db) await this.init();
 
-    const { empId, facGbn, uploProcGbn, onlyUnsent, minPlanDay } = params;
+    const { empId, facGbn, uploProcGbn, onlyUnsent, minPlanDay,startDay, endDay } = params;
 
     let sql = 'SELECT * FROM tb_mob_rst130 WHERE directnm_emp_no = ? AND fac_gbn = ? AND uplo_proc_gbn = ?';
     const dbParams: any[] = [empId, facGbn, uploProcGbn];
@@ -1861,9 +1863,21 @@ class DatabaseService {
     if (onlyUnsent) {
       sql += " AND (send_flag = 'N' OR send_flag IS NULL)";
     }
-    if (minPlanDay) {
+
+   
+    if (minPlanDay) { 
       sql += " AND chk_sta_dtm >= ?";
       dbParams.push(minPlanDay);
+    }
+    
+   if (startDay) {
+      sql += " AND chk_plan_day >= ?";
+      dbParams.push(startDay.replace(/-/g, ""));
+    }
+
+    if (endDay) {
+      sql += " AND chk_plan_day <= ?";
+      dbParams.push(endDay.replace(/-/g, ""));
     }
 
     const res = await this.db!.query(sql, dbParams);
